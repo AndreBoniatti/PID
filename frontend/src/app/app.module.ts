@@ -8,10 +8,11 @@ import { AppComponent } from './app.component';
 import { AuthComponent } from './auth/auth.component';
 import { authInterceptor } from './shared/interceptors/auth-interceptor';
 import { HomeComponent } from './home/home.component';
+import { MainModule } from './main/main.module';
 
 @NgModule({
   declarations: [AppComponent, AuthComponent, HomeComponent],
-  imports: [BrowserModule, AppRoutingModule],
+  imports: [BrowserModule, AppRoutingModule, MainModule],
   providers: [
     provideHttpClient(withInterceptors([authInterceptor])),
     provideAnimationsAsync(),

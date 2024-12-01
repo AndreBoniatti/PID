@@ -1,0 +1,15 @@
+<mat-toolbar>
+  <img [src]="userInfo?.picture" class="user-image" />
+  <span>{{ userInfo?.name }}</span>
+  <span class="spacer"></span>
+  <button mat-icon-button>
+    <mat-icon>notifications</mat-icon>
+  </button>
+  <button mat-icon-button (click)="logout()">
+    <mat-icon>logout</mat-icon>
+  </button>
+</mat-toolbar>
+
+<div class="m-2">
+  <router-outlet />
+</div>
