@@ -14,7 +14,7 @@ namespace PID.Api.Controllers;
 [Route("api/[controller]")]
 public class AuthController : ControllerBase
 {
-    [HttpPost("google")]
+    [HttpPost("Google")]
     public async Task<IActionResult> GoogleLogin(
         [FromBody] GoogleLoginDto dto,
         [FromServices] IUserRepository userRepository
@@ -27,13 +27,18 @@ public class AuthController : ControllerBase
             var user = userRepository.Find(x => x.Email == payload.Email).FirstOrDefault();
             if (user == null)
             {
-                user = new User(payload.Name, payload.Email, payload.Picture);
-
+                user = new User(payload.Email, payload.Name, payload.Picture);
                 userRepository.Add(user);
-                await userRepository.SaveChangesAsync();
+            }
+            else
+            {
+                user.Update(payload.Name, payload.Picture);
+                userRepository.Update(user);
             }
 
-            var jwtToken = GenerateJwtToken(payload);
+            await userRepository.SaveChangesAsync();
+
+            var jwtToken = GenerateJwtToken(payload, user);
 
             return Ok(new { token = jwtToken });
         }
@@ -43,13 +48,14 @@ public class AuthController : ControllerBase
         }
     }
 
-    private string GenerateJwtToken(GoogleJsonWebSignature.Payload payload)
+    private string GenerateJwtToken(GoogleJsonWebSignature.Payload payload, User user)
     {
         var claims = new List<Claim>
         {
-            new Claim(ClaimTypes.NameIdentifier, payload.Subject),
-            new Claim(ClaimTypes.Name, payload.Name),
-            new Claim(ClaimTypes.Email, payload.Email)
+            new Claim("name", payload.Name),
+            new Claim("email", payload.Email),
+            new Claim("picture", payload.Picture),
+            new Claim("userType", ((int)user.UserType).ToString())
         };
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("sua-chave-secreta-que-deve-ser-trocada-para-ser-mais-segura"));
