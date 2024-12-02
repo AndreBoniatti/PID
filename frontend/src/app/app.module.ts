@@ -6,7 +6,7 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AuthComponent } from './auth/auth.component';
-import { authInterceptor } from './shared/interceptors/auth-interceptor';
+import { authInterceptor } from './auth/interceptors/auth-interceptor';
 import { HomeComponent } from './home/home.component';
 import { MainModule } from './main/main.module';
 
