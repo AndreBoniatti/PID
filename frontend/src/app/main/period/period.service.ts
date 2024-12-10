@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
+import { IPeriod } from './interfaces/IPeriod';
 
 const BASE_URL = environment.api;
 
@@ -12,7 +13,7 @@ const BASE_URL = environment.api;
 export class PeriodService {
   constructor(private http: HttpClient) {}
 
-  getAll(): Observable<any> {
-    return this.http.get<any>(`${BASE_URL}/Period`);
+  getAll(): Observable<IPeriod[]> {
+    return this.http.get<IPeriod[]>(`${BASE_URL}/Period`);
   }
 }

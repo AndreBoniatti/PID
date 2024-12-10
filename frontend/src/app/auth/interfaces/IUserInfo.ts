@@ -4,6 +4,6 @@ export interface IUserInfo {
   name: string;
   email: string;
   picture: string;
-  userType: EUserType;
+  type: EUserType;
   exp: number;
 }
