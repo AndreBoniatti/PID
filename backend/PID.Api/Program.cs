@@ -13,8 +13,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddTransient<IUserRepository, UserRepository>();
 builder.Services.AddTransient<IPeriodRepository, PeriodRepository>();
+builder.Services.AddTransient<IPlanRepository, PlanRepository>();
+builder.Services.AddTransient<IUserRepository, UserRepository>();
 
 builder.Services.AddAuthConfiguration();
 

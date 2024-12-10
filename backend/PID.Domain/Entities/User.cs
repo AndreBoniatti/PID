@@ -10,15 +10,17 @@ public class User : EntityBase
         Name = name;
         Picure = picure;
 
-        UserType = EUserType.TEACHER;
+        Type = EUserType.TEACHER;
         Workload = 40;
     }
 
     public string Email { get; private set; } = string.Empty;
     public string Name { get; private set; } = string.Empty;
     public string Picure { get; private set; } = string.Empty;
-    public EUserType UserType { get; private set; }
+    public EUserType Type { get; private set; }
     public int Workload { get; private set; }
+
+    public virtual ICollection<Plan>? Plans { get; private set; }
 
     public void Update(string name, string picure)
     {

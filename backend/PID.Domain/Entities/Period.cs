@@ -5,6 +5,8 @@ public class Period : EntityBase
     public int Year { get; private set; }
     public int Semester { get; private set; }
 
+    public virtual ICollection<Plan>? Plans { get; private set; }
+
     public string GetInfo()
     {
         return $"{Year} / {Semester}";

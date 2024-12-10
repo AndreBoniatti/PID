@@ -55,7 +55,7 @@ public class AuthController : ControllerBase
             new Claim("name", payload.Name),
             new Claim("email", payload.Email),
             new Claim("picture", payload.Picture),
-            new Claim("userType", ((int)user.UserType).ToString())
+            new Claim("type", ((int)user.Type).ToString())
         };
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("sua-chave-secreta-que-deve-ser-trocada-para-ser-mais-segura"));
