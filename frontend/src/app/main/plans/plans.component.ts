@@ -1,28 +1,28 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { PlanService } from './plan.service';
+import { PlansService } from './plans.service';
 import { IPlans } from './interfaces/IPlans';
 import { getPlanSituationDescription } from './enums/EPlanSituation';
 
 @Component({
   standalone: false,
 
-  templateUrl: './plan.component.html',
-  styleUrl: './plan.component.css',
+  templateUrl: './plans.component.html',
+  styleUrl: './plans.component.css',
 })
-export class PlanComponent implements OnInit {
+export class PlansComponent implements OnInit {
   displayedColumns: string[] = ['period', 'situation', 'actions'];
   plans: IPlans[] = [];
 
-  constructor(private planService: PlanService, private router: Router) {}
+  constructor(private plansService: PlansService, private router: Router) {}
 
   ngOnInit(): void {
     this.getPlans();
   }
 
   getPlans(): void {
-    this.planService.getAll().subscribe((plans) => {
+    this.plansService.getAll().subscribe((plans) => {
       console.log(plans);
       this.plans = plans;
     });

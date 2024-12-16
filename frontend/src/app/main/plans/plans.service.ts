@@ -4,14 +4,14 @@ import { Observable } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
 import { IPlans } from './interfaces/IPlans';
-import { IPlan } from './interfaces/IPlan';
+import { IPlan } from './components/plan/interfaces/IPlan';
 
 const BASE_URL = environment.api;
 
 @Injectable({
   providedIn: 'root',
 })
-export class PlanService {
+export class PlansService {
   constructor(private http: HttpClient) {}
 
   getAll(): Observable<IPlans[]> {

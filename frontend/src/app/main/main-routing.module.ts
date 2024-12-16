@@ -2,8 +2,8 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 import { MainComponent } from './main.component';
-import { PlanComponent } from './plan/plan.component';
-import { PlanActivityComponent } from './plan/components/plan-activity/plan-activity.component';
+import { PlansComponent } from './plans/plans.component';
+import { PlanComponent } from './plans/components/plan/plan.component';
 
 const routes: Routes = [
   {
@@ -17,15 +17,15 @@ const routes: Routes = [
       },
       {
         path: 'plans',
-        component: PlanComponent,
+        component: PlansComponent,
       },
       {
         path: 'plan',
-        component: PlanActivityComponent,
+        component: PlanComponent,
       },
       {
         path: 'plan/:id',
-        component: PlanActivityComponent,
+        component: PlanComponent,
       },
     ],
   },
