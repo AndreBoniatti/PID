@@ -12,4 +12,6 @@ public class Plan : EntityBase
 
     public Guid PeriodId { get; private set; }
     public virtual Period? Period { get; private set; }
+
+    public virtual ICollection<PlanActivity>? Activities { get; private set; }
 }
