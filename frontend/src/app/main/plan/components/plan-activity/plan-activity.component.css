@@ -1,0 +1,10 @@
+.add-atividade {
+  display: flex;
+  justify-content: end;
+  align-items: center;
+}
+
+.activities-table {
+  max-height: 410px;
+  overflow: auto;
+}

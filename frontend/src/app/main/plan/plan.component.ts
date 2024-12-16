@@ -1,6 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
-import { IPlan } from './interfaces/IPlan';
+import { PlanService } from './plan.service';
+import { IPlans } from './interfaces/IPlans';
+import { getPlanSituationDescription } from './enums/EPlanSituation';
 
 @Component({
   standalone: false,
@@ -8,16 +11,33 @@ import { IPlan } from './interfaces/IPlan';
   templateUrl: './plan.component.html',
   styleUrl: './plan.component.css',
 })
-export class PlanComponent {
-  displayedColumns: string[] = ['atividade', 'ch', 'actions'];
-  plans: IPlan[] = [
-    {
-      atividade: 'Algoritmos I',
-      ch: 20,
-    },
-    {
-      atividade: 'Engenharia de Software I',
-      ch: 20,
-    },
-  ];
+export class PlanComponent implements OnInit {
+  displayedColumns: string[] = ['period', 'situation', 'actions'];
+  plans: IPlans[] = [];
+
+  constructor(private planService: PlanService, private router: Router) {}
+
+  ngOnInit(): void {
+    this.getPlans();
+  }
+
+  getPlans(): void {
+    this.planService.getAll().subscribe((plans) => {
+      console.log(plans);
+      this.plans = plans;
+    });
+  }
+
+  getSituation(situation: number): string {
+    return getPlanSituationDescription(situation);
+  }
+
+  viewPlan(): void {
+    this.router.navigateByUrl('main/plan');
+  }
+
+  updatePlan(plandId: string): void {
+    if (plandId) this.router.navigateByUrl(`main/plan/${plandId}`);
+    else this.router.navigateByUrl('main/plan');
+  }
 }

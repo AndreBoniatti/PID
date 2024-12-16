@@ -1,4 +1,5 @@
+import { IPlanActivity } from '../components/plan-activity/interfaces/IPlanActivity';
+
 export interface IPlan {
-  atividade: string;
-  ch: number;
+  activities: IPlanActivity[];
 }

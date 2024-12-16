@@ -2,8 +2,8 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 import { MainComponent } from './main.component';
-import { PeriodComponent } from './period/period.component';
 import { PlanComponent } from './plan/plan.component';
+import { PlanActivityComponent } from './plan/components/plan-activity/plan-activity.component';
 
 const routes: Routes = [
   {
@@ -12,16 +12,20 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: 'period',
+        redirectTo: 'plans',
         pathMatch: 'full',
       },
       {
-        path: 'period',
-        component: PeriodComponent,
+        path: 'plans',
+        component: PlanComponent,
       },
       {
         path: 'plan',
-        component: PlanComponent,
+        component: PlanActivityComponent,
+      },
+      {
+        path: 'plan/:id',
+        component: PlanActivityComponent,
       },
     ],
   },
