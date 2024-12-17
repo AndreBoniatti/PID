@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 
 import { IPlanActivity } from '../plan-activity/interfaces/IPlanActivity';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PlansService } from '../../plans.service';
 import { SnackBarService } from '../../../../shared/services/snack-bar.service';
+import { MatDialog } from '@angular/material/dialog';
+import { PlanActivityComponent } from '../plan-activity/plan-activity.component';
 
 @Component({
   standalone: false,
@@ -12,6 +14,8 @@ import { SnackBarService } from '../../../../shared/services/snack-bar.service';
   styleUrl: './plan.component.css',
 })
 export class PlanComponent implements OnInit {
+  readonly dialog = inject(MatDialog);
+
   displayedColumns: string[] = ['description', 'workload', 'actions'];
   activities: IPlanActivity[] = [];
 
@@ -38,5 +42,15 @@ export class PlanComponent implements OnInit {
         }
       });
     }
+  }
+
+  openActivityDialog(activityId?: string) {
+    const dialogRef = this.dialog.open(PlanActivityComponent, {
+      data: activityId,
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      console.log(`Dialog result: ${result}`);
+    });
   }
 }

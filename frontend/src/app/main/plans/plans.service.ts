@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { IPlans } from './interfaces/IPlans';
 import { IPlan } from './components/plan/interfaces/IPlan';
+import { IActivityType } from './components/plan-activity/interfaces/IActivityType';
 
 const BASE_URL = environment.api;
 
@@ -24,5 +25,9 @@ export class PlansService {
 
   getHasPlanInLastPeriod(): Observable<boolean> {
     return this.http.get<boolean>(`${BASE_URL}/Plan/HasPlanInLastPeriod`);
+  }
+
+  getActivityTypes(): Observable<IActivityType[]> {
+    return this.http.get<IActivityType[]>(`${BASE_URL}/ActivityType`);
   }
 }
