@@ -17,7 +17,6 @@ public class PlanRepository : RepositoryBase<Plan>, IPlanRepository
     {
         return await _pIDContext.Plans
             .AsNoTracking()
-            .Include(x => x.Period)
             .Where(x => x.UserId == userId)
             .Select(x => new PlansDto
             {
@@ -32,7 +31,6 @@ public class PlanRepository : RepositoryBase<Plan>, IPlanRepository
     {
         return await _pIDContext.Plans
             .AsNoTracking()
-            .Include(x => x.Activities)
             .Where(x => x.UserId == userId && x.Id == id)
             .Select(x => new PlanDto
             {
@@ -40,7 +38,13 @@ public class PlanRepository : RepositoryBase<Plan>, IPlanRepository
                 {
                     Id = y.Id,
                     Description = y.Description,
-                    Workload = y.Workload
+                    Workload = y.GetWorkload(),
+                    WorkloadAllocation = y.WorkloadAllocation,
+                    ActivityType = y.ActivityType == null ? null : new ActivityTypeDto
+                    {
+                        Id = y.ActivityType.Id,
+                        Description = y.ActivityType.Description
+                    }
                 })
                 .ToList()
             })
