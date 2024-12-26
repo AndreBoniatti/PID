@@ -1,26 +1,33 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  inject,
-  OnInit,
-} from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Component, inject, OnInit, ViewChild } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 import { PlansService } from '../../plans.service';
 import { IActivityType } from './interfaces/IActivityType';
+import { IPlanActivity } from './interfaces/IPlanActivity';
+import { WorkloadAllocationComponent } from '../workload-allocation/workload-allocation.component';
 
 @Component({
   standalone: false,
 
   templateUrl: './plan-activity.component.html',
   styleUrl: './plan-activity.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PlanActivityComponent implements OnInit {
-  data?: string = inject(MAT_DIALOG_DATA);
+  data?: IPlanActivity = inject(MAT_DIALOG_DATA);
   activityTypes: IActivityType[] = [];
 
-  constructor(private plansService: PlansService) {}
+  @ViewChild('workloadAllocation')
+  workloadAllocation?: WorkloadAllocationComponent;
+
+  description = '';
+  activityTypeId = '';
+
+  constructor(
+    private dialogRef: MatDialogRef<PlanActivityComponent>,
+    private plansService: PlansService
+  ) {
+    this.dialogRef.disableClose = true;
+  }
 
   ngOnInit(): void {
     this.plansService.getActivityTypes().subscribe((res) => {
@@ -28,7 +35,30 @@ export class PlanActivityComponent implements OnInit {
     });
 
     if (this.data) {
-      // get data
+      this.description = this.data.description;
+      this.activityTypeId = this.data.activityType?.id ?? '';
     }
+  }
+
+  close(save: boolean): void {
+    if (save) {
+      const workloadAllocation =
+        this.workloadAllocation?.getSelectedPairs() ?? [];
+
+      const planActivity: IPlanActivity = {
+        id: this.data?.id,
+        description: this.description,
+        workload: workloadAllocation.length,
+        workloadAllocation: workloadAllocation,
+        activityType: {
+          id: this.activityTypeId,
+          description:
+            this.activityTypes.find((x) => x.id === this.activityTypeId)
+              ?.description ?? '',
+        },
+      };
+
+      this.dialogRef.close(planActivity);
+    } else this.dialogRef.close();
   }
 }

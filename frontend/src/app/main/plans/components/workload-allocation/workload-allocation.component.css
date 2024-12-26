@@ -1,0 +1,24 @@
+.schedule-container {
+  table {
+    border-collapse: collapse;
+    width: 100%;
+
+    th,
+    td {
+      border: 1px solid #ccc;
+      text-align: center;
+      padding: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    td.selected {
+      background-color: #4caf50;
+      color: #fff;
+    }
+
+    td:not(.selected):hover {
+      background-color: #f0f0f0;
+    }
+  }
+}

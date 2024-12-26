@@ -4,7 +4,7 @@
     <div class="col-md-4">
       <mat-form-field class="mat-form-field">
         <mat-label>Tipo</mat-label>
-        <mat-select>
+        <mat-select [(ngModel)]="activityTypeId">
           @for (activityType of activityTypes; track activityType) {
           <mat-option [value]="activityType.id">{{
             activityType.description
@@ -16,12 +16,23 @@
     <div class="col-md-8">
       <mat-form-field class="mat-form-field">
         <mat-label>Descrição</mat-label>
-        <input matInput placeholder="Ex. Algoritmos I" />
+        <input
+          matInput
+          placeholder="Ex. Algoritmos I"
+          [(ngModel)]="description"
+        />
       </mat-form-field>
     </div>
   </div>
+
+  <div class="row">
+    <app-workload-allocation
+      #workloadAllocation
+      [preSelectedPairs]="data?.workloadAllocation"
+    ></app-workload-allocation>
+  </div>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-  <button mat-button mat-dialog-close>Fechar</button>
-  <button mat-button [mat-dialog-close]="true" cdkFocusInitial>Salvar</button>
+  <button mat-button (click)="close(false)">Fechar</button>
+  <button mat-button cdkFocusInitial (click)="close(true)">Salvar</button>
 </mat-dialog-actions>

@@ -4,13 +4,20 @@
 
 <div class="mat-elevation-z8 m-3">
   <div class="activities-table">
-    <table mat-table class="mat-table" [dataSource]="activities">
+    <table mat-table class="mat-table" [dataSource]="dataSource">
       <ng-container matColumnDef="description">
         <th mat-header-cell class="mat-header-cell" *matHeaderCellDef>
           Atividade
         </th>
         <td mat-cell class="mat-cell" *matCellDef="let row">
           {{ row.description }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="activityType">
+        <th mat-header-cell class="mat-header-cell" *matHeaderCellDef>Tipo</th>
+        <td mat-cell class="mat-cell" *matCellDef="let row">
+          {{ row.activityType?.description }}
         </td>
       </ng-container>
 
@@ -27,7 +34,7 @@
           <button mat-icon-button>
             <mat-icon>visibility</mat-icon>
           </button>
-          <button mat-icon-button (click)="openActivityDialog(row.id)">
+          <button mat-icon-button (click)="openActivityDialog(row)">
             <mat-icon>edit</mat-icon>
           </button>
         </td>

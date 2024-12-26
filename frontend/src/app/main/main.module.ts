@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -14,6 +15,7 @@ import { MainComponent } from './main.component';
 import { PlansComponent } from './plans/plans.component';
 import { PlanComponent } from './plans/components/plan/plan.component';
 import { PlanActivityComponent } from './plans/components/plan-activity/plan-activity.component';
+import { WorkloadAllocationComponent } from './plans/components/workload-allocation/workload-allocation.component';
 
 @NgModule({
   declarations: [
@@ -21,10 +23,12 @@ import { PlanActivityComponent } from './plans/components/plan-activity/plan-act
     PlansComponent,
     PlanComponent,
     PlanActivityComponent,
+    WorkloadAllocationComponent,
   ],
   imports: [
     CommonModule,
     MainRoutingModule,
+    FormsModule,
     MatIconModule,
     MatButtonModule,
     MatToolbarModule,

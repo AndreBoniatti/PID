@@ -23,7 +23,6 @@ export class PlansComponent implements OnInit {
 
   getPlans(): void {
     this.plansService.getAll().subscribe((plans) => {
-      console.log(plans);
       this.plans = plans;
     });
   }

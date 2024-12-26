@@ -1,0 +1,20 @@
+<div class="schedule-container">
+  <table>
+    <thead>
+      <tr>
+        <th *ngFor="let day of days">{{ day }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let time of times; let i = index">
+        <td
+          *ngFor="let day of days; let j = index"
+          [class.selected]="isSelected(i, j)"
+          (click)="toggleSelection(i, j)"
+        >
+          {{ time }}ª Aula
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
