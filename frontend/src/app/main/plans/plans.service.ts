@@ -6,6 +6,11 @@ import { environment } from '../../../environments/environment';
 import { IPlans } from './interfaces/IPlans';
 import { IPlan } from './components/plan/interfaces/IPlan';
 import { IActivityType } from './components/plan-activity/interfaces/IActivityType';
+import {
+  ICreatePlanActivity,
+  ICreatePlanActivityResponse,
+} from './components/plan-activity/interfaces/ICreatePlanActivity';
+import { IUpdatePlanActivity } from './components/plan-activity/interfaces/IUpdatePlanActivity';
 
 const BASE_URL = environment.api;
 
@@ -29,5 +34,21 @@ export class PlansService {
 
   getActivityTypes(): Observable<IActivityType[]> {
     return this.http.get<IActivityType[]>(`${BASE_URL}/ActivityType`);
+  }
+
+  postPlanActivity(
+    planActivity: ICreatePlanActivity
+  ): Observable<ICreatePlanActivityResponse> {
+    return this.http.post<ICreatePlanActivityResponse>(
+      `${BASE_URL}/PlanActivity`,
+      planActivity
+    );
+  }
+
+  putPlanActivity(
+    id: string,
+    planActivity: IUpdatePlanActivity
+  ): Observable<any> {
+    return this.http.put(`${BASE_URL}/PlanActivity/${id}`, planActivity);
   }
 }

@@ -17,6 +17,8 @@ import { MatTableDataSource } from '@angular/material/table';
 export class PlanComponent implements OnInit {
   readonly dialog = inject(MatDialog);
 
+  planId: string | null = null;
+
   displayedColumns: string[] = [
     'description',
     'activityType',
@@ -34,12 +36,10 @@ export class PlanComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const planId = this.route.snapshot.paramMap.get('id');
-    if (planId) {
-      this.plansService.getById(planId).subscribe((res) => {
-        this.dataSource.data = res.activities;
-      });
-    } else {
+    this.planId = this.route.snapshot.paramMap.get('id');
+
+    if (this.planId) this.getPlan(this.planId);
+    else {
       this.plansService.getHasPlanInLastPeriod().subscribe((hasPlan) => {
         if (hasPlan) {
           this.snackBarService.openSnackBar(
@@ -51,24 +51,49 @@ export class PlanComponent implements OnInit {
     }
   }
 
-  openActivityDialog(activity?: IPlanActivity) {
+  getPlan(planId: string): void {
+    this.plansService.getById(planId).subscribe((res) => {
+      this.dataSource.data = res.activities;
+    });
+  }
+
+  openActivityDialog(activity?: IPlanActivity): void {
     const dialogRef = this.dialog.open(PlanActivityComponent, {
       data: activity,
     });
 
     dialogRef.afterClosed().subscribe((result?: IPlanActivity) => {
-      if (result) {
-        if (result.id) {
-          const activityIndex = this.dataSource.data.findIndex(
-            (x) => x.id === result.id
-          );
+      if (!result) return;
 
-          if (activityIndex >= 0) this.dataSource.data[activityIndex] = result;
-        } else {
-          this.dataSource.data.push(result);
+      if (result.id) {
+        const activityIndex = this.dataSource.data.findIndex(
+          (x) => x.id === result.id
+        );
+
+        if (activityIndex >= 0) {
+          this.plansService
+            .putPlanActivity(result.id, {
+              activityTypeId: result.activityType!.id,
+              description: result.description,
+              workloadAllocation: result.workloadAllocation,
+            })
+            .subscribe(() => {
+              this.getPlan(this.planId!);
+            });
         }
-
-        this.dataSource.data = this.dataSource.data;
+      } else {
+        this.plansService
+          .postPlanActivity({
+            planId: this.planId,
+            activityTypeId: result.activityType!.id,
+            description: result.description,
+            workloadAllocation: result.workloadAllocation,
+          })
+          .subscribe((res) => {
+            if (!this.planId)
+              this.router.navigateByUrl(`main/plan/${res.planId}`);
+            else this.getPlan(this.planId);
+          });
       }
     });
   }
