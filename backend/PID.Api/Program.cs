@@ -16,6 +16,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddTransient<IActivityTypeRepository, ActivityTypeRepository>();
 builder.Services.AddTransient<IPeriodRepository, PeriodRepository>();
 builder.Services.AddTransient<IPlanRepository, PlanRepository>();
+builder.Services.AddTransient<IPlanActivityRepository, PlanActivityRepository>();
 builder.Services.AddTransient<IUserRepository, UserRepository>();
 
 builder.Services.AddAuthConfiguration();

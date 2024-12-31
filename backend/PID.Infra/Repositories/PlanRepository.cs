@@ -34,7 +34,9 @@ public class PlanRepository : RepositoryBase<Plan>, IPlanRepository
             .Where(x => x.UserId == userId && x.Id == id)
             .Select(x => new PlanDto
             {
-                Activities = x.Activities == null ? null : x.Activities.Select(y => new PlanActivityDto
+                Activities = x.Activities == null ? null : x.Activities
+                .OrderBy(x => x.Description)
+                .Select(y => new PlanActivityDto
                 {
                     Id = y.Id,
                     Description = y.Description,

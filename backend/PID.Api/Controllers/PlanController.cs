@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PID.Domain.Dtos;
 using PID.Domain.Enums;
-
 using PID.Domain.Repositories;
 
 namespace PID.Api.Controllers;
@@ -24,6 +23,8 @@ public class PlanController() : ControllerBase
 
         var userPlans = await planRepository
             .GetUserPlansAsync(new Guid("a643795a-2d36-494f-8bf4-028504529ebe"));
+
+        userPlans = userPlans.OrderByDescending(x => x.Period).ToList();
 
         if (!userPlans.Any(x => x.Period == lastPeriod.GetInfo()))
         {

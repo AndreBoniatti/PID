@@ -4,6 +4,13 @@ namespace PID.Domain.Entities;
 
 public class Plan : EntityBase
 {
+    public Plan(Guid userId, Guid periodId)
+    {
+        UserId = userId;
+        PeriodId = periodId;
+        Situation = EPlanSituation.PENDING;
+    }
+
     public EPlanSituation Situation { get; private set; }
     public string? Observation { get; private set; }
 
