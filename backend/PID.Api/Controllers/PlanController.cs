@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PID.Api.Extensions;
 using PID.Domain.Dtos;
 using PID.Domain.Enums;
 using PID.Domain.Repositories;
@@ -9,7 +10,7 @@ namespace PID.Api.Controllers;
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
-public class PlanController() : ControllerBase
+public class PlanController : MainController
 {
     [HttpGet]
     public async Task<IActionResult> GetPlans(
@@ -21,9 +22,7 @@ public class PlanController() : ControllerBase
         if (lastPeriod == null)
             return BadRequest("Não há períodos cadastrados");
 
-        var userPlans = await planRepository
-            .GetUserPlansAsync(new Guid("a643795a-2d36-494f-8bf4-028504529ebe"));
-
+        var userPlans = await planRepository.GetUserPlansAsync(GetUserId());
         userPlans = userPlans.OrderByDescending(x => x.Period).ToList();
 
         if (!userPlans.Any(x => x.Period == lastPeriod.GetInfo()))
@@ -45,7 +44,7 @@ public class PlanController() : ControllerBase
         [FromServices] IPlanRepository planRepository
     )
     {
-        var plan = await planRepository.GetPlanByIdAsync(new Guid("a643795a-2d36-494f-8bf4-028504529ebe"), id);
+        var plan = await planRepository.GetPlanByIdAsync(GetUserId(), id);
         return Ok(plan);
     }
 
@@ -60,7 +59,7 @@ public class PlanController() : ControllerBase
             return BadRequest("Não há períodos cadastrados");
 
         var planExists = planRepository.Exists(x =>
-            x.UserId == new Guid("a643795a-2d36-494f-8bf4-028504529ebe") &&
+            x.UserId == GetUserId() &&
             x.PeriodId == lastPeriod.Id
         );
 

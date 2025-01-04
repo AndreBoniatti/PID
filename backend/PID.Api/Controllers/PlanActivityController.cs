@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PID.Api.Extensions;
 using PID.Domain.Commands;
 using PID.Domain.Entities;
 using PID.Domain.Repositories;
@@ -9,7 +10,7 @@ namespace PID.Api.Controllers;
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
-public class PlanActivityController() : ControllerBase
+public class PlanActivityController : MainController
 {
     [HttpPost]
     public async Task<IActionResult> PostPlanActivity(
@@ -19,6 +20,7 @@ public class PlanActivityController() : ControllerBase
         [FromServices] IPlanActivityRepository planActivityRepository
     )
     {
+        var userId = GetUserId();
         Plan plan;
 
         if (command.PlanId == null)
@@ -28,14 +30,14 @@ public class PlanActivityController() : ControllerBase
                 return BadRequest("Não há períodos cadastrados");
 
             var planExists = planRepository.Exists(x =>
-                x.UserId == new Guid("a643795a-2d36-494f-8bf4-028504529ebe") &&
+                x.UserId == userId &&
                 x.PeriodId == lastPeriod.Id
             );
 
             if (planExists)
                 return BadRequest("Plano já existente no período");
 
-            plan = new Plan(new Guid("a643795a-2d36-494f-8bf4-028504529ebe"), lastPeriod.Id);
+            plan = new Plan(userId, lastPeriod.Id);
             command.PlanId = plan.Id;
 
             planRepository.Add(plan);
@@ -47,7 +49,7 @@ public class PlanActivityController() : ControllerBase
             if (savedPlan == null)
                 return BadRequest("Plano não encontrado");
 
-            if (savedPlan.UserId != new Guid("a643795a-2d36-494f-8bf4-028504529ebe"))
+            if (savedPlan.UserId != userId)
                 return BadRequest("Plano inválido");
 
             plan = savedPlan;
@@ -76,7 +78,7 @@ public class PlanActivityController() : ControllerBase
         if (planActivity == null)
             return NotFound("Atividade não encontrada");
 
-        if (planActivity.Plan?.UserId != new Guid("a643795a-2d36-494f-8bf4-028504529ebe"))
+        if (planActivity.Plan?.UserId != GetUserId())
             return BadRequest("Atividade inválida");
 
         planActivity.Update(

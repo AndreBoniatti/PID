@@ -7,12 +7,13 @@ using Microsoft.AspNetCore.Mvc;
 using PID.Domain.Dtos;
 using PID.Domain.Repositories;
 using PID.Domain.Entities;
+using PID.Api.Extensions;
 
 namespace PID.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class AuthController : ControllerBase
+public class AuthController : MainController
 {
     [HttpPost("Google")]
     public async Task<IActionResult> GoogleLogin(
@@ -55,7 +56,8 @@ public class AuthController : ControllerBase
             new Claim("name", payload.Name),
             new Claim("email", payload.Email),
             new Claim("picture", payload.Picture),
-            new Claim("type", ((int)user.Type).ToString())
+            new Claim("type", ((int)user.Type).ToString()),
+            new Claim("id", user.Id.ToString()),
         };
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("sua-chave-secreta-que-deve-ser-trocada-para-ser-mais-segura"));

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PID.Api.Extensions;
 using PID.Domain.Dtos;
 using PID.Domain.Repositories;
 
@@ -8,7 +9,7 @@ namespace PID.Api.Controllers;
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
-public class ActivityTypeController() : ControllerBase
+public class ActivityTypeController : MainController
 {
     [HttpGet]
     public IActionResult GetAll(
