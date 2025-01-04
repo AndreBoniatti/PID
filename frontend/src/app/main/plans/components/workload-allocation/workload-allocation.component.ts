@@ -2,6 +2,10 @@ import { Component, Input, OnInit } from '@angular/core';
 import { IWorkloadSlot } from './interfaces/IWorkloadSlot';
 import { IPlanActivityTable } from '../plan-activity/interfaces/IPlanActivityTable';
 import { IPlanActivity } from '../plan-activity/interfaces/IPlanActivity';
+import {
+  getRandomColorForWhiteText,
+  getSelectionColor,
+} from '../../../../shared/helpers/ColorHelper';
 
 @Component({
   standalone: false,
@@ -11,7 +15,7 @@ import { IPlanActivity } from '../plan-activity/interfaces/IPlanActivity';
   styleUrl: './workload-allocation.component.css',
 })
 export class WorkloadAllocationComponent implements OnInit {
-  @Input() planActivity?: IPlanActivityTable;
+  @Input() planActivityTable?: IPlanActivityTable;
   days = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab'];
   times = Array.from({ length: 13 }, (_, i) => i + 1);
   slots: IWorkloadSlot[][] = [];
@@ -28,13 +32,23 @@ export class WorkloadAllocationComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.currentActivityDescription = this.planActivity?.updating?.description;
+    this.currentActivityDescription =
+      this.planActivityTable?.updating?.description;
 
-    this.test(this.planActivity?.updating);
-    this.planActivity?.alreadySaved?.forEach((x) => this.test(x, true));
+    this.setPlanActivityAllocation(this.planActivityTable?.updating);
+    this.planActivityTable?.alreadySaved?.forEach((x) =>
+      this.setPlanActivityAllocation(x, true)
+    );
   }
 
-  test(planActivity?: IPlanActivity, readonly: boolean = false) {
+  setPlanActivityAllocation(
+    planActivity?: IPlanActivity,
+    readonly: boolean = false
+  ) {
+    const activityColor = readonly
+      ? getRandomColorForWhiteText()
+      : getSelectionColor();
+
     planActivity?.workloadAllocation?.forEach((pair) => {
       const [rowStr, colStr] = pair.split('/');
       const row = +rowStr;
@@ -49,6 +63,7 @@ export class WorkloadAllocationComponent implements OnInit {
         this.slots[row][col].activity = planActivity.description;
         this.slots[row][col].selected = true;
         this.slots[row][col].readonly = readonly;
+        this.slots[row][col].color = activityColor;
       }
     });
   }
@@ -56,10 +71,11 @@ export class WorkloadAllocationComponent implements OnInit {
   toggleSelection(i: number, j: number) {
     if (this.isReadonly(i, j)) return;
 
-    this.slots[i][j].selected = !this.slots[i][j].selected;
-    this.slots[i][j].activity = this.slots[i][j].selected
+    this.slots[i][j].selected = !this.isSelected(i, j);
+    this.slots[i][j].activity = this.isSelected(i, j)
       ? this.currentActivityDescription
       : '';
+    this.slots[i][j].color = this.isSelected(i, j) ? getSelectionColor() : '';
   }
 
   isSelected(i: number, j: number): boolean {

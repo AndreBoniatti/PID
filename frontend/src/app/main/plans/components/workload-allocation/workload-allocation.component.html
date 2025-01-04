@@ -10,6 +10,7 @@
         <td
           *ngFor="let column of row; let j = index"
           [class.selected]="isSelected(i, j)"
+          [style.background-color]="column.color"
           (click)="toggleSelection(i, j)"
         >
           {{ column.activity }}
