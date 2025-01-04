@@ -6,13 +6,13 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let time of times; let i = index">
+      <tr *ngFor="let row of slots; let i = index">
         <td
-          *ngFor="let day of days; let j = index"
+          *ngFor="let column of row; let j = index"
           [class.selected]="isSelected(i, j)"
           (click)="toggleSelection(i, j)"
         >
-          {{ time }}ª Aula
+          {{ column.activity }}
         </td>
       </tr>
     </tbody>

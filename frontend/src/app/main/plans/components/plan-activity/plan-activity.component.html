@@ -20,6 +20,7 @@
           matInput
           placeholder="Ex. Algoritmos I"
           [(ngModel)]="description"
+          (keyup)="descriptionChanged()"
         />
       </mat-form-field>
     </div>
@@ -28,7 +29,7 @@
   <div class="row">
     <app-workload-allocation
       #workloadAllocation
-      [preSelectedPairs]="data?.workloadAllocation"
+      [planActivity]="data"
     ></app-workload-allocation>
   </div>
 </mat-dialog-content>

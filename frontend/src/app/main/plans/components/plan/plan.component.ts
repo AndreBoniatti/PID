@@ -7,6 +7,7 @@ import { SnackBarService } from '../../../../shared/services/snack-bar.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PlanActivityComponent } from '../plan-activity/plan-activity.component';
 import { MatTableDataSource } from '@angular/material/table';
+import { IPlanActivityTable } from '../plan-activity/interfaces/IPlanActivityTable';
 
 @Component({
   standalone: false,
@@ -58,8 +59,15 @@ export class PlanComponent implements OnInit {
   }
 
   openActivityDialog(activity?: IPlanActivity): void {
+    const dialogData: IPlanActivityTable = {
+      updating: activity,
+      alreadySaved: this.dataSource.data.filter((x) => x.id !== activity?.id),
+    };
+
     const dialogRef = this.dialog.open(PlanActivityComponent, {
-      data: activity,
+      data: dialogData,
+      maxWidth: '100vw',
+      width: '80%',
     });
 
     dialogRef.afterClosed().subscribe((result?: IPlanActivity) => {

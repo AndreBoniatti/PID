@@ -1,13 +1,15 @@
 .schedule-container {
   table {
-    border-collapse: collapse;
     width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
 
     th,
     td {
+      height: 50px;
       border: 1px solid #ccc;
       text-align: center;
-      padding: 8px;
+      padding: 4px;
       cursor: pointer;
       transition: background-color 0.3s ease;
     }

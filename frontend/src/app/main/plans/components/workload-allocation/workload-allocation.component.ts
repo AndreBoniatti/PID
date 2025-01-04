@@ -1,4 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { IWorkloadSlot } from './interfaces/IWorkloadSlot';
+import { IPlanActivityTable } from '../plan-activity/interfaces/IPlanActivityTable';
+import { IPlanActivity } from '../plan-activity/interfaces/IPlanActivity';
 
 @Component({
   standalone: false,
@@ -8,17 +11,31 @@ import { Component, Input, OnInit } from '@angular/core';
   styleUrl: './workload-allocation.component.css',
 })
 export class WorkloadAllocationComponent implements OnInit {
-  @Input() preSelectedPairs?: string[] = [];
+  @Input() planActivity?: IPlanActivityTable;
   days = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab'];
   times = Array.from({ length: 13 }, (_, i) => i + 1);
-  selectedSlots: boolean[][] = [];
+  slots: IWorkloadSlot[][] = [];
+
+  currentActivityDescription?: string;
 
   constructor() {
-    this.selectedSlots = this.times.map(() => this.days.map(() => false));
+    this.slots = this.times.map(() =>
+      this.days.map(
+        () =>
+          ({ activity: '', selected: false, readonly: false } as IWorkloadSlot)
+      )
+    );
   }
 
   ngOnInit(): void {
-    this.preSelectedPairs?.forEach((pair) => {
+    this.currentActivityDescription = this.planActivity?.updating?.description;
+
+    this.test(this.planActivity?.updating);
+    this.planActivity?.alreadySaved?.forEach((x) => this.test(x, true));
+  }
+
+  test(planActivity?: IPlanActivity, readonly: boolean = false) {
+    planActivity?.workloadAllocation?.forEach((pair) => {
       const [rowStr, colStr] = pair.split('/');
       const row = +rowStr;
       const col = +colStr;
@@ -29,24 +46,47 @@ export class WorkloadAllocationComponent implements OnInit {
         col >= 0 &&
         col < this.days.length
       ) {
-        this.selectedSlots[row][col] = true;
+        this.slots[row][col].activity = planActivity.description;
+        this.slots[row][col].selected = true;
+        this.slots[row][col].readonly = readonly;
       }
     });
   }
 
   toggleSelection(i: number, j: number) {
-    this.selectedSlots[i][j] = !this.selectedSlots[i][j];
+    if (this.isReadonly(i, j)) return;
+
+    this.slots[i][j].selected = !this.slots[i][j].selected;
+    this.slots[i][j].activity = this.slots[i][j].selected
+      ? this.currentActivityDescription
+      : '';
   }
 
   isSelected(i: number, j: number): boolean {
-    return this.selectedSlots[i][j];
+    return this.slots[i][j].selected;
+  }
+
+  isReadonly(i: number, j: number): boolean {
+    return this.slots[i][j].readonly;
+  }
+
+  setActivityDescription(description: string): void {
+    this.currentActivityDescription = description;
+
+    for (let i = 0; i < this.slots.length; i++) {
+      for (let j = 0; j < this.slots[i].length; j++) {
+        if (this.isSelected(i, j) && !this.isReadonly(i, j)) {
+          this.slots[i][j].activity = this.currentActivityDescription;
+        }
+      }
+    }
   }
 
   getSelectedPairs(): string[] {
     const selectedPairs: string[] = [];
-    for (let i = 0; i < this.selectedSlots.length; i++) {
-      for (let j = 0; j < this.selectedSlots[i].length; j++) {
-        if (this.selectedSlots[i][j]) {
+    for (let i = 0; i < this.slots.length; i++) {
+      for (let j = 0; j < this.slots[i].length; j++) {
+        if (this.isSelected(i, j) && !this.isReadonly(i, j)) {
           selectedPairs.push(`${i}/${j}`);
         }
       }

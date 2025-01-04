@@ -5,6 +5,7 @@ import { PlansService } from '../../plans.service';
 import { IActivityType } from './interfaces/IActivityType';
 import { IPlanActivity } from './interfaces/IPlanActivity';
 import { WorkloadAllocationComponent } from '../workload-allocation/workload-allocation.component';
+import { IPlanActivityTable } from './interfaces/IPlanActivityTable';
 
 @Component({
   standalone: false,
@@ -13,7 +14,7 @@ import { WorkloadAllocationComponent } from '../workload-allocation/workload-all
   styleUrl: './plan-activity.component.css',
 })
 export class PlanActivityComponent implements OnInit {
-  data?: IPlanActivity = inject(MAT_DIALOG_DATA);
+  data?: IPlanActivityTable = inject(MAT_DIALOG_DATA);
   activityTypes: IActivityType[] = [];
 
   @ViewChild('workloadAllocation')
@@ -34,10 +35,14 @@ export class PlanActivityComponent implements OnInit {
       this.activityTypes = res;
     });
 
-    if (this.data) {
-      this.description = this.data.description;
-      this.activityTypeId = this.data.activityType?.id ?? '';
+    if (this.data?.updating) {
+      this.description = this.data.updating.description;
+      this.activityTypeId = this.data.updating.activityType?.id ?? '';
     }
+  }
+
+  descriptionChanged(): void {
+    this.workloadAllocation?.setActivityDescription(this.description);
   }
 
   close(save: boolean): void {
@@ -46,7 +51,7 @@ export class PlanActivityComponent implements OnInit {
         this.workloadAllocation?.getSelectedPairs() ?? [];
 
       const planActivity: IPlanActivity = {
-        id: this.data?.id,
+        id: this.data?.updating?.id,
         description: this.description,
         workload: workloadAllocation.length,
         workloadAllocation: workloadAllocation,
