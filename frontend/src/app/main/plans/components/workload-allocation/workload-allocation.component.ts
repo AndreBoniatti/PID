@@ -3,7 +3,7 @@ import { IWorkloadSlot } from './interfaces/IWorkloadSlot';
 import { IPlanActivityTable } from '../plan-activity/interfaces/IPlanActivityTable';
 import { IPlanActivity } from '../plan-activity/interfaces/IPlanActivity';
 import {
-  getRandomColorForWhiteText,
+  getColorByIndex,
   getSelectionColor,
 } from '../../../../shared/helpers/ColorHelper';
 
@@ -36,18 +36,18 @@ export class WorkloadAllocationComponent implements OnInit {
       this.planActivityTable?.updating?.description;
 
     this.setPlanActivityAllocation(this.planActivityTable?.updating);
-    this.planActivityTable?.alreadySaved?.forEach((x) =>
-      this.setPlanActivityAllocation(x, true)
+    this.planActivityTable?.alreadySaved?.forEach((x, index) =>
+      this.setPlanActivityAllocation(x, index, true)
     );
   }
 
   setPlanActivityAllocation(
     planActivity?: IPlanActivity,
+    index?: number,
     readonly: boolean = false
   ) {
-    const activityColor = readonly
-      ? getRandomColorForWhiteText()
-      : getSelectionColor();
+    const activityColor =
+      index != null ? getColorByIndex(index) : getSelectionColor();
 
     planActivity?.workloadAllocation?.forEach((pair) => {
       const [rowStr, colStr] = pair.split('/');

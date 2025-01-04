@@ -15,12 +15,15 @@
     }
 
     td.selected {
-      /* background-color: #4caf50; */
       color: #fff;
     }
 
     td:not(.selected):hover {
       background-color: #f0f0f0;
+    }
+
+    td.highlighted {
+      border: yellow 2px dashed;
     }
   }
 }
