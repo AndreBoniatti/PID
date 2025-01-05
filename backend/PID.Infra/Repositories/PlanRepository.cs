@@ -35,20 +35,20 @@ public class PlanRepository : RepositoryBase<Plan>, IPlanRepository
             .Select(x => new PlanDto
             {
                 Activities = x.Activities == null ? null : x.Activities
-                .OrderBy(x => x.Description)
-                .Select(y => new PlanActivityDto
-                {
-                    Id = y.Id,
-                    Description = y.Description,
-                    Workload = y.GetWorkload(),
-                    WorkloadAllocation = y.WorkloadAllocation,
-                    ActivityType = y.ActivityType == null ? null : new ActivityTypeDto
+                    .OrderBy(x => x.Description)
+                    .Select(y => new PlanActivityDto
                     {
-                        Id = y.ActivityType.Id,
-                        Description = y.ActivityType.Description
-                    }
-                })
-                .ToList()
+                        Id = y.Id,
+                        Description = y.Description,
+                        Workload = y.GetWorkload(),
+                        WorkloadAllocation = y.WorkloadAllocation,
+                        ActivityType = y.ActivityType == null ? null : new ActivityTypeDto
+                        {
+                            Id = y.ActivityType.Id,
+                            Description = y.ActivityType.Description
+                        }
+                    })
+                    .ToList()
             })
             .FirstOrDefaultAsync();
     }
