@@ -45,6 +45,9 @@ public class PlanController : MainController
     )
     {
         var plan = await planRepository.GetPlanByIdAsync(GetUserId(), id);
+        if (plan == null)
+            return NotFound("Plano não encontrado");
+
         return Ok(plan);
     }
 

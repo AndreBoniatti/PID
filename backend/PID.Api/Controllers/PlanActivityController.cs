@@ -92,4 +92,23 @@ public class PlanActivityController : MainController
 
         return Ok();
     }
+
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> DeletePlanActivity(
+        [FromRoute] Guid id,
+        [FromServices] IPlanActivityRepository planActivityRepository
+    )
+    {
+        var planActivity = planActivityRepository.Find(x => x.Id == id).FirstOrDefault();
+        if (planActivity == null)
+            return NotFound("Atividade não encontrada");
+
+        if (planActivity.Plan?.UserId != GetUserId())
+            return BadRequest("Atividade inválida");
+
+        planActivityRepository.Remove(planActivity);
+        await planActivityRepository.SaveChangesAsync();
+
+        return Ok();
+    }
 }
