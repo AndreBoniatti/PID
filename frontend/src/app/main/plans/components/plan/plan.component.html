@@ -37,11 +37,11 @@
       <ng-container matColumnDef="actions">
         <th mat-header-cell class="mat-header-cell" *matHeaderCellDef>Ações</th>
         <td mat-cell class="mat-cell" *matCellDef="let row">
-          <button mat-icon-button>
-            <mat-icon>visibility</mat-icon>
-          </button>
           <button mat-icon-button (click)="openActivityDialog(row)">
             <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button (click)="deleteActivity(row)">
+            <mat-icon>delete</mat-icon>
           </button>
         </td>
       </ng-container>

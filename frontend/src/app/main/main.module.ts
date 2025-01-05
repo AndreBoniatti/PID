@@ -9,6 +9,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 import { MainRoutingModule } from './main-routing.module';
 import { MainComponent } from './main.component';
@@ -16,6 +17,7 @@ import { PlansComponent } from './plans/plans.component';
 import { PlanComponent } from './plans/components/plan/plan.component';
 import { PlanActivityComponent } from './plans/components/plan-activity/plan-activity.component';
 import { WorkloadAllocationComponent } from './plans/components/workload-allocation/workload-allocation.component';
+import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
 
 @NgModule({
   declarations: [
@@ -24,6 +26,7 @@ import { WorkloadAllocationComponent } from './plans/components/workload-allocat
     PlanComponent,
     PlanActivityComponent,
     WorkloadAllocationComponent,
+    ConfirmDialogComponent,
   ],
   imports: [
     CommonModule,
@@ -37,6 +40,7 @@ import { WorkloadAllocationComponent } from './plans/components/workload-allocat
     MatDialogModule,
     MatInputModule,
     MatSelectModule,
+    MatSnackBarModule,
   ],
 })
 export class MainModule {}

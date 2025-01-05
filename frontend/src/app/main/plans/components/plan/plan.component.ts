@@ -9,6 +9,7 @@ import { SnackBarService } from '../../../../shared/services/snack-bar.service';
 import { PlanActivityComponent } from '../plan-activity/plan-activity.component';
 import { IPlanActivityTable } from '../plan-activity/interfaces/IPlanActivityTable';
 import { UserService } from '../../../../auth/user.service';
+import { ConfirmDialogService } from '../../../confirm-dialog/confirm-dialog.service';
 
 @Component({
   standalone: false,
@@ -37,7 +38,8 @@ export class PlanComponent implements OnInit {
     private route: ActivatedRoute,
     private plansService: PlansService,
     private userService: UserService,
-    private snackBarService: SnackBarService
+    private snackBarService: SnackBarService,
+    private confirmDialogService: ConfirmDialogService
   ) {}
 
   ngOnInit(): void {
@@ -50,6 +52,7 @@ export class PlanComponent implements OnInit {
           this.snackBarService.openSnackBar(
             'Usuário já possui plano nesse período'
           );
+
           this.router.navigateByUrl('main/plans');
         }
       });
@@ -67,8 +70,14 @@ export class PlanComponent implements OnInit {
   }
 
   getPlan(planId: string): void {
-    this.plansService.getById(planId).subscribe((res) => {
-      this.dataSource.data = res.activities;
+    this.plansService.getById(planId).subscribe({
+      next: (res) => {
+        this.dataSource.data = res.activities;
+      },
+      error: () => {
+        this.snackBarService.openSnackBar('Erro ao obter informações do plano');
+        this.router.navigateByUrl('main/plans');
+      },
     });
   }
 
@@ -110,8 +119,17 @@ export class PlanComponent implements OnInit {
               description: result.description,
               workloadAllocation: result.workloadAllocation,
             })
-            .subscribe(() => {
-              this.getPlan(this.planId!);
+            .subscribe({
+              next: () => {
+                this.snackBarService.openSnackBar(
+                  'Atividade editada com sucesso'
+                );
+
+                this.getPlan(this.planId!);
+              },
+              error: () => {
+                this.snackBarService.openSnackBar('Erro ao editar atividade');
+              },
             });
         }
       } else {
@@ -122,12 +140,41 @@ export class PlanComponent implements OnInit {
             description: result.description,
             workloadAllocation: result.workloadAllocation,
           })
-          .subscribe((res) => {
-            if (!this.planId)
-              this.router.navigateByUrl(`main/plan/${res.planId}`);
-            else this.getPlan(this.planId);
+          .subscribe({
+            next: (res) => {
+              this.snackBarService.openSnackBar(
+                'Atividade adicionada com sucesso'
+              );
+
+              if (!this.planId)
+                this.router.navigateByUrl(`main/plan/${res.planId}`);
+              else this.getPlan(this.planId);
+            },
+            error: () => {
+              this.snackBarService.openSnackBar('Erro ao adicionar atividade');
+            },
           });
       }
     });
+  }
+
+  deleteActivity(activity: IPlanActivity) {
+    this.confirmDialogService
+      .openDialog(`Deseja deletar a atividade: ${activity.description}?`)
+      .subscribe((confirm) => {
+        if (confirm) {
+          this.plansService.deletePlanActivity(activity.id!).subscribe({
+            next: () => {
+              this.snackBarService.openSnackBar(
+                'Atividade deletada com sucesso'
+              );
+              this.getPlan(this.planId!);
+            },
+            error: () => {
+              this.snackBarService.openSnackBar('Erro ao deletar atividade');
+            },
+          });
+        }
+      });
   }
 }

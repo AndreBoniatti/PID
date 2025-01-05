@@ -51,4 +51,8 @@ export class PlansService {
   ): Observable<any> {
     return this.http.put(`${BASE_URL}/PlanActivity/${id}`, planActivity);
   }
+
+  deletePlanActivity(id: string): Observable<any> {
+    return this.http.delete(`${BASE_URL}/PlanActivity/${id}`);
+  }
 }
