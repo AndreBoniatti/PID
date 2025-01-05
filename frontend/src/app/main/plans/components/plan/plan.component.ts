@@ -1,13 +1,14 @@
 import { Component, inject, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { ActivatedRoute, Router } from '@angular/router';
+import { MatTableDataSource } from '@angular/material/table';
 
 import { IPlanActivity } from '../plan-activity/interfaces/IPlanActivity';
-import { ActivatedRoute, Router } from '@angular/router';
 import { PlansService } from '../../plans.service';
 import { SnackBarService } from '../../../../shared/services/snack-bar.service';
-import { MatDialog } from '@angular/material/dialog';
 import { PlanActivityComponent } from '../plan-activity/plan-activity.component';
-import { MatTableDataSource } from '@angular/material/table';
 import { IPlanActivityTable } from '../plan-activity/interfaces/IPlanActivityTable';
+import { UserService } from '../../../../auth/user.service';
 
 @Component({
   standalone: false,
@@ -29,10 +30,13 @@ export class PlanComponent implements OnInit {
   dataSource: MatTableDataSource<IPlanActivity> =
     new MatTableDataSource<IPlanActivity>([]);
 
+  userWorkload = 0;
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private plansService: PlansService,
+    private userService: UserService,
     private snackBarService: SnackBarService
   ) {}
 
@@ -50,6 +54,16 @@ export class PlanComponent implements OnInit {
         }
       });
     }
+
+    this.userService.getWorkload().subscribe({
+      next: (workload) => {
+        this.userWorkload = workload;
+      },
+      error: () => {
+        this.snackBarService.openSnackBar('Erro ao obter CH do usuário');
+        this.router.navigateByUrl('main/plans');
+      },
+    });
   }
 
   getPlan(planId: string): void {
@@ -58,8 +72,19 @@ export class PlanComponent implements OnInit {
     });
   }
 
+  getTotalWorkloadSaved(): number {
+    return this.dataSource.data.reduce((a, b) => {
+      return a + b.workload;
+    }, 0);
+  }
+
+  getWorkloadRemaining(): number {
+    return this.userWorkload - this.getTotalWorkloadSaved();
+  }
+
   openActivityDialog(activity?: IPlanActivity): void {
     const dialogData: IPlanActivityTable = {
+      userWorkload: this.userWorkload,
       updating: activity,
       alreadySaved: this.dataSource.data.filter((x) => x.id !== activity?.id),
     };

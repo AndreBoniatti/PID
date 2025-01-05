@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+
 import { IWorkloadSlot } from './interfaces/IWorkloadSlot';
 import { IPlanActivityTable } from '../plan-activity/interfaces/IPlanActivityTable';
 import { IPlanActivity } from '../plan-activity/interfaces/IPlanActivity';
@@ -6,6 +7,7 @@ import {
   getColorByIndex,
   getSelectionColor,
 } from '../../../../shared/helpers/ColorHelper';
+import { SnackBarService } from '../../../../shared/services/snack-bar.service';
 
 @Component({
   standalone: false,
@@ -22,7 +24,7 @@ export class WorkloadAllocationComponent implements OnInit {
 
   currentActivityDescription?: string;
 
-  constructor() {
+  constructor(private snackBarService: SnackBarService) {
     this.slots = this.times.map(() =>
       this.days.map(
         () =>
@@ -71,6 +73,16 @@ export class WorkloadAllocationComponent implements OnInit {
   toggleSelection(i: number, j: number) {
     if (this.isReadonly(i, j)) return;
 
+    if (
+      !this.isSelected(i, j) &&
+      (this.planActivityTable?.userWorkload ?? 0) -
+        this.getTotalWorkloadSelected() <=
+        0
+    ) {
+      this.snackBarService.openSnackBar('CH máxima já atingida');
+      return;
+    }
+
     this.slots[i][j].selected = !this.isSelected(i, j);
     this.slots[i][j].activity = this.isSelected(i, j)
       ? this.currentActivityDescription
@@ -109,5 +121,18 @@ export class WorkloadAllocationComponent implements OnInit {
     }
 
     return selectedPairs;
+  }
+
+  getTotalWorkloadSelected(): number {
+    let count = 0;
+    for (let i = 0; i < this.slots.length; i++) {
+      for (let j = 0; j < this.slots[i].length; j++) {
+        if (this.isSelected(i, j)) {
+          count++;
+        }
+      }
+    }
+
+    return count;
   }
 }

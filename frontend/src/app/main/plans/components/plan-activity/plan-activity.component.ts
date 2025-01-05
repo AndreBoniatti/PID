@@ -6,6 +6,7 @@ import { IActivityType } from './interfaces/IActivityType';
 import { IPlanActivity } from './interfaces/IPlanActivity';
 import { WorkloadAllocationComponent } from '../workload-allocation/workload-allocation.component';
 import { IPlanActivityTable } from './interfaces/IPlanActivityTable';
+import { SnackBarService } from '../../../../shared/services/snack-bar.service';
 
 @Component({
   standalone: false,
@@ -25,7 +26,8 @@ export class PlanActivityComponent implements OnInit {
 
   constructor(
     private dialogRef: MatDialogRef<PlanActivityComponent>,
-    private plansService: PlansService
+    private plansService: PlansService,
+    private snackBarService: SnackBarService
   ) {
     this.dialogRef.disableClose = true;
   }
@@ -45,10 +47,21 @@ export class PlanActivityComponent implements OnInit {
     this.workloadAllocation?.setActivityDescription(this.description);
   }
 
+  formIsValid(): boolean {
+    return !!this.description && !!this.activityTypeId;
+  }
+
   close(save: boolean): void {
     if (save) {
       const workloadAllocation =
         this.workloadAllocation?.getSelectedPairs() ?? [];
+
+      if (!this.formIsValid() || workloadAllocation.length <= 0) {
+        this.snackBarService.openSnackBar(
+          'Informe todos os campos e ao menos um horário'
+        );
+        return;
+      }
 
       const planActivity: IPlanActivity = {
         id: this.data?.updating?.id,

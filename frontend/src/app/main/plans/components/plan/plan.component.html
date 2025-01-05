@@ -1,4 +1,10 @@
-<div class="add-atividade m-3">
+<div class="activity-container m-3">
+  <span class="activity-info"
+    >CH do Usuário: <strong>{{ userWorkload }}</strong></span
+  >
+  <span class="activity-info"
+    >CH Restante: <strong>{{ getWorkloadRemaining() }}</strong></span
+  >
   <button mat-raised-button (click)="openActivityDialog()">Adicionar</button>
 </div>
 
