@@ -18,10 +18,25 @@ import { SnackBarService } from '../../../../shared/services/snack-bar.service';
 })
 export class WorkloadAllocationComponent implements OnInit {
   @Input() planActivityTable?: IPlanActivityTable;
+  hours = [
+    '07:00',
+    '08:00',
+    '09:00',
+    '10:00',
+    '11:00',
+    '12:00',
+    '13:00',
+    '14:00',
+    '15:00',
+    '16:00',
+    '17:00',
+    '18:00',
+    '19:00',
+    '20:00',
+  ];
   days = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab'];
   times = Array.from({ length: 13 }, (_, i) => i + 1);
   slots: IWorkloadSlot[][] = [];
-
   currentActivityDescription?: string;
 
   constructor(private snackBarService: SnackBarService) {

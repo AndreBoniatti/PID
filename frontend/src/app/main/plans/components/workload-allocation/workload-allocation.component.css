@@ -1,4 +1,16 @@
 .schedule-container {
+  height: 315px;
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  thead th {
+    position: sticky;
+    top: 0;
+    background-color: #fff;
+    color: #000;
+    z-index: 10;
+  }
+
   table {
     width: 100%;
     table-layout: fixed;
@@ -6,7 +18,6 @@
 
     th,
     td {
-      height: 50px;
       border: 1px solid #ccc;
       text-align: center;
       padding: 4px;
@@ -14,11 +25,26 @@
       transition: background-color 0.3s ease;
     }
 
+    .time-column {
+      width: 80px;
+    }
+
+    .time-header {
+      width: 80px;
+    }
+
+    .upper-time {
+      font-weight: bold;
+    }
+    .lower-time {
+      font-style: italic;
+    }
+
     td.selected {
       color: #fff;
     }
 
-    td:not(.selected):hover {
+    tbody tr td:not(:first-child):not(.selected):hover {
       background-color: #f0f0f0;
     }
 
@@ -27,7 +53,7 @@
     }
 
     td.highlighted {
-      border: yellow 2px dashed;
+      border: 2px dashed yellow;
     }
   }
 }

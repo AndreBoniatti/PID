@@ -2,11 +2,16 @@
   <table>
     <thead>
       <tr>
+        <th class="time-header">Horário</th>
         <th *ngFor="let day of days">{{ day }}</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let row of slots; let i = index">
+        <td class="time-column">
+          <div class="upper-time">{{ hours[i] }}</div>
+          <div class="lower-time">{{ hours[i + 1] }}</div>
+        </td>
         <td
           *ngFor="let column of row; let j = index"
           [class.selected]="isSelected(i, j)"
