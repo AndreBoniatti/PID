@@ -6,4 +6,6 @@ export interface IPlanActivity {
   workload: number;
   workloadAllocation: string[];
   activityType?: IActivityType;
+
+  updating?: boolean;
 }

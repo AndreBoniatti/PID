@@ -1,4 +1,9 @@
-<div class="schedule-container">
+<div
+  class="schedule-container"
+  [ngClass]="{
+    'scrollable-container': !readonlyMode
+  }"
+>
   <table>
     <thead>
       <tr>
@@ -7,10 +12,13 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let row of slots; let i = index">
+      <tr
+        *ngFor="let row of slots; let i = index"
+        [ngClass]="{ 'period-separator': i === 4 || i === 8 }"
+      >
         <td class="time-column">
-          <div class="upper-time">{{ hours[i] }}</div>
-          <div class="lower-time">{{ hours[i + 1] }}</div>
+          <div class="upper-time">{{ workloadSchedule[i].period }}</div>
+          <div class="lower-time">{{ workloadSchedule[i].hours }}</div>
         </td>
         <td
           *ngFor="let column of row; let j = index"

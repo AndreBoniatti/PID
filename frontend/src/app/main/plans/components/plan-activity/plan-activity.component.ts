@@ -5,7 +5,6 @@ import { PlansService } from '../../plans.service';
 import { IActivityType } from './interfaces/IActivityType';
 import { IPlanActivity } from './interfaces/IPlanActivity';
 import { WorkloadAllocationComponent } from '../workload-allocation/workload-allocation.component';
-import { IPlanActivityTable } from './interfaces/IPlanActivityTable';
 import { SnackBarService } from '../../../../shared/services/snack-bar.service';
 
 @Component({
@@ -15,7 +14,7 @@ import { SnackBarService } from '../../../../shared/services/snack-bar.service';
   styleUrl: './plan-activity.component.css',
 })
 export class PlanActivityComponent implements OnInit {
-  data?: IPlanActivityTable = inject(MAT_DIALOG_DATA);
+  data?: IPlanActivity = inject(MAT_DIALOG_DATA);
   activityTypes: IActivityType[] = [];
 
   @ViewChild('workloadAllocation')
@@ -37,9 +36,9 @@ export class PlanActivityComponent implements OnInit {
       this.activityTypes = res;
     });
 
-    if (this.data?.updating) {
-      this.description = this.data.updating.description;
-      this.activityTypeId = this.data.updating.activityType?.id ?? '';
+    if (this.data) {
+      this.description = this.data.description;
+      this.activityTypeId = this.data.activityType?.id ?? '';
     }
   }
 
@@ -64,7 +63,7 @@ export class PlanActivityComponent implements OnInit {
       }
 
       const planActivity: IPlanActivity = {
-        id: this.data?.updating?.id,
+        id: this.data?.id,
         description: this.description,
         workload: workloadAllocation.length,
         workloadAllocation: workloadAllocation,

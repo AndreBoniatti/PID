@@ -1,20 +1,16 @@
 .schedule-container {
-  height: 315px;
-  overflow-y: auto;
-  overflow-x: hidden;
-
-  thead th {
-    position: sticky;
-    top: 0;
-    background-color: #fff;
-    color: #000;
-    z-index: 10;
-  }
-
   table {
     width: 100%;
     table-layout: fixed;
     border-collapse: collapse;
+
+    thead th {
+      position: sticky;
+      top: 0;
+      background-color: #fff;
+      color: #000;
+      z-index: 10;
+    }
 
     th,
     td {
@@ -25,17 +21,25 @@
       transition: background-color 0.3s ease;
     }
 
+    .period-separator {
+      td {
+        border-bottom: 3px dashed #fff;
+      }
+    }
+
     .time-column {
-      width: 80px;
+      width: 100px;
+      color: white;
     }
 
     .time-header {
-      width: 80px;
+      width: 100px;
     }
 
     .upper-time {
       font-weight: bold;
     }
+
     .lower-time {
       font-style: italic;
     }
@@ -56,4 +60,10 @@
       border: 2px dashed yellow;
     }
   }
+}
+
+.scrollable-container {
+  height: 315px;
+  overflow-y: auto;
+  overflow-x: hidden;
 }

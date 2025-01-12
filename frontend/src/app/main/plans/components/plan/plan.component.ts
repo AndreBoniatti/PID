@@ -10,6 +10,7 @@ import { PlanActivityComponent } from '../plan-activity/plan-activity.component'
 import { IPlanActivityTable } from '../plan-activity/interfaces/IPlanActivityTable';
 import { UserService } from '../../../../auth/user.service';
 import { ConfirmDialogService } from '../../../confirm-dialog/confirm-dialog.service';
+import { WorkloadAllocationService } from '../workload-allocation/workload-allocation.service';
 
 @Component({
   standalone: false,
@@ -38,6 +39,7 @@ export class PlanComponent implements OnInit {
     private route: ActivatedRoute,
     private plansService: PlansService,
     private userService: UserService,
+    private workloadAllocationService: WorkloadAllocationService,
     private snackBarService: SnackBarService,
     private confirmDialogService: ConfirmDialogService
   ) {}
@@ -73,6 +75,9 @@ export class PlanComponent implements OnInit {
     this.plansService.getById(planId).subscribe({
       next: (res) => {
         this.dataSource.data = res.activities;
+        this.workloadAllocationService.setPlanActivityTable(
+          this.getPlanActivityData()
+        );
       },
       error: () => {
         this.snackBarService.openSnackBar('Erro ao obter informações do plano');
@@ -91,15 +96,25 @@ export class PlanComponent implements OnInit {
     return this.userWorkload - this.getTotalWorkloadSaved();
   }
 
-  openActivityDialog(activity?: IPlanActivity): void {
-    const dialogData: IPlanActivityTable = {
+  getPlanActivityData(activity?: IPlanActivity): IPlanActivityTable {
+    return {
       userWorkload: this.userWorkload,
-      updating: activity,
-      alreadySaved: this.dataSource.data.filter((x) => x.id !== activity?.id),
+      planActivities: this.dataSource.data.map((x) => {
+        return {
+          ...x,
+          updating: x.id === activity?.id,
+        };
+      }),
     };
+  }
+
+  openActivityDialog(activity?: IPlanActivity): void {
+    this.workloadAllocationService.setPlanActivityTable(
+      this.getPlanActivityData(activity)
+    );
 
     const dialogRef = this.dialog.open(PlanActivityComponent, {
-      data: dialogData,
+      data: activity,
       maxWidth: '100vw',
       width: '80%',
     });

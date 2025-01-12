@@ -1,4 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
 
 import { IWorkloadSlot } from './interfaces/IWorkloadSlot';
 import { IPlanActivityTable } from '../plan-activity/interfaces/IPlanActivityTable';
@@ -8,6 +9,8 @@ import {
   getSelectionColor,
 } from '../../../../shared/helpers/ColorHelper';
 import { SnackBarService } from '../../../../shared/services/snack-bar.service';
+import { WorkloadAllocationService } from './workload-allocation.service';
+import { WorkloadSchedule } from './constants/WorkloadSchedule';
 
 @Component({
   standalone: false,
@@ -16,55 +19,64 @@ import { SnackBarService } from '../../../../shared/services/snack-bar.service';
   templateUrl: './workload-allocation.component.html',
   styleUrl: './workload-allocation.component.css',
 })
-export class WorkloadAllocationComponent implements OnInit {
-  @Input() planActivityTable?: IPlanActivityTable;
-  hours = [
-    '07:00',
-    '08:00',
-    '09:00',
-    '10:00',
-    '11:00',
-    '12:00',
-    '13:00',
-    '14:00',
-    '15:00',
-    '16:00',
-    '17:00',
-    '18:00',
-    '19:00',
-    '20:00',
-  ];
+export class WorkloadAllocationComponent implements OnInit, OnDestroy {
+  @Input() readonlyMode = false;
+  workloadSchedule = WorkloadSchedule;
   days = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab'];
   times = Array.from({ length: 13 }, (_, i) => i + 1);
   slots: IWorkloadSlot[][] = [];
+  userWorkload = 0;
   currentActivityDescription?: string;
+  planActivityTableSubscription?: Subscription;
 
-  constructor(private snackBarService: SnackBarService) {
+  constructor(
+    private workloadAllocationService: WorkloadAllocationService,
+    private snackBarService: SnackBarService
+  ) {}
+
+  ngOnInit(): void {
+    this.planActivityTableSubscription = this.workloadAllocationService
+      .getPlanActivityTable()
+      .subscribe((planActivityTable) => {
+        if (planActivityTable) this.setTableData(planActivityTable);
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.planActivityTableSubscription?.unsubscribe();
+  }
+
+  initializeSlots(): void {
     this.slots = this.times.map(() =>
       this.days.map(
         () =>
-          ({ activity: '', selected: false, readonly: false } as IWorkloadSlot)
+          ({
+            activity: '',
+            selected: false,
+            readonly: this.readonlyMode,
+          } as IWorkloadSlot)
       )
     );
   }
 
-  ngOnInit(): void {
-    this.currentActivityDescription =
-      this.planActivityTable?.updating?.description;
+  setTableData(planActivityTable: IPlanActivityTable): void {
+    this.initializeSlots();
 
-    this.setPlanActivityAllocation(this.planActivityTable?.updating);
-    this.planActivityTable?.alreadySaved?.forEach((x, index) =>
-      this.setPlanActivityAllocation(x, index, true)
+    this.userWorkload = planActivityTable.userWorkload;
+    this.currentActivityDescription = planActivityTable?.planActivities.find(
+      (x) => x.updating
+    )?.description;
+
+    planActivityTable?.planActivities?.forEach((x, index) =>
+      this.setPlanActivityAllocation(x, index)
     );
   }
 
-  setPlanActivityAllocation(
-    planActivity?: IPlanActivity,
-    index?: number,
-    readonly: boolean = false
-  ) {
+  setPlanActivityAllocation(planActivity: IPlanActivity, index: number) {
     const activityColor =
-      index != null ? getColorByIndex(index) : getSelectionColor();
+      !this.readonlyMode && planActivity.updating
+        ? getSelectionColor()
+        : getColorByIndex(index);
 
     planActivity?.workloadAllocation?.forEach((pair) => {
       const [rowStr, colStr] = pair.split('/');
@@ -79,7 +91,8 @@ export class WorkloadAllocationComponent implements OnInit {
       ) {
         this.slots[row][col].activity = planActivity.description;
         this.slots[row][col].selected = true;
-        this.slots[row][col].readonly = readonly;
+        this.slots[row][col].readonly =
+          !planActivity.updating || this.readonlyMode;
         this.slots[row][col].color = activityColor;
       }
     });
@@ -90,9 +103,7 @@ export class WorkloadAllocationComponent implements OnInit {
 
     if (
       !this.isSelected(i, j) &&
-      (this.planActivityTable?.userWorkload ?? 0) -
-        this.getTotalWorkloadSelected() <=
-        0
+      this.userWorkload - this.getTotalWorkloadSelected() <= 0
     ) {
       this.snackBarService.openSnackBar('CH máxima já atingida');
       return;
