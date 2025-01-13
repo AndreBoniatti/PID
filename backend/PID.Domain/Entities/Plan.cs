@@ -21,4 +21,10 @@ public class Plan : EntityBase
     public virtual Period? Period { get; private set; }
 
     public virtual ICollection<PlanActivity>? Activities { get; private set; }
+
+    public void SetSituation(EPlanSituation situation)
+    {
+        Situation = situation;
+        UpdatedAt = DateTime.UtcNow;
+    }
 }

@@ -45,35 +45,37 @@ body {
 }
 
 table {
-    width: 99.7%;
-    margin-top: 25px;
-    table-layout: fixed;
-    border-collapse: collapse;
+  width: 99.7%;
+  margin-top: 25px;
+  table-layout: fixed;
+  border-collapse: collapse;
 }
 
-td, th {
-    padding: 5px;
-    text-align: center;
-    border: 1px solid #000 !important; 
+td,
+th {
+  padding: 5px;
+  text-align: center;
+  border: 1px solid #000 !important;
 }
 
 th {
-    background-color: rgb(238, 238, 238);
+  background-color: rgb(238, 238, 238);
 }
 
-.time-header, .time-column {
-    width: 100px;
-    background-color: rgb(238, 238, 238);
+.time-header,
+.time-column {
+  width: 100px;
+  background-color: rgb(238, 238, 238);
 }
 
 .upper-time {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 .lower-time {
-    font-style: italic;
+  font-style: italic;
 }
 
 .period-separator {
-    border-bottom: 3px solid #000;
+  border-bottom: 3px solid #000;
 }

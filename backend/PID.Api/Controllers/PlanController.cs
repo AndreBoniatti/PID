@@ -84,4 +84,50 @@ public class PlanController : MainController
         var pdf = report.GetPdf(plan);
         return File(pdf, "application/pdf");
     }
+
+    [HttpPut("{id:guid}/Submit")]
+    public async Task<IActionResult> SubmitPlan(
+        [FromRoute] Guid id,
+        [FromServices] IPlanRepository planRepository
+    )
+    {
+        var plan = planRepository
+            .Find(x => x.UserId == GetUserId() && x.Id == id)
+            .FirstOrDefault();
+
+        if (plan == null)
+            return NotFound("Plano não encontrado");
+
+        if (plan.Situation != EPlanSituation.PENDING)
+            return BadRequest("Situação inválida");
+
+        plan.SetSituation(EPlanSituation.SENT);
+        planRepository.Update(plan);
+        await planRepository.SaveChangesAsync();
+
+        return Ok();
+    }
+
+    [HttpPut("{id:guid}/CancelSubmission")]
+    public async Task<IActionResult> CancelPlanSubmission(
+        [FromRoute] Guid id,
+        [FromServices] IPlanRepository planRepository
+    )
+    {
+        var plan = planRepository
+            .Find(x => x.UserId == GetUserId() && x.Id == id)
+            .FirstOrDefault();
+
+        if (plan == null)
+            return NotFound("Plano não encontrado");
+
+        if (plan.Situation != EPlanSituation.SENT)
+            return BadRequest("Situação inválida");
+
+        plan.SetSituation(EPlanSituation.PENDING);
+        planRepository.Update(plan);
+        await planRepository.SaveChangesAsync();
+
+        return Ok();
+    }
 }
