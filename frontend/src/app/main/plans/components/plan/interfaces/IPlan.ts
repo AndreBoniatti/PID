@@ -1,5 +1,8 @@
+import { IUser } from '../../../../../auth/interfaces/IUser';
 import { IPlanActivity } from '../../plan-activity/interfaces/IPlanActivity';
 
 export interface IPlan {
-  activities: IPlanActivity[];
+  period: string;
+  user?: IUser;
+  activities?: IPlanActivity[];
 }

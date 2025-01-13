@@ -32,6 +32,13 @@ export class PlansService {
     return this.http.get<boolean>(`${BASE_URL}/Plan/HasPlanInLastPeriod`);
   }
 
+  getWorkloadAllocationReport(id: string): Observable<any> {
+    return this.http.get(`${BASE_URL}/Plan/${id}/WorkloadAllocationReport`, {
+      observe: 'response',
+      responseType: 'blob',
+    });
+  }
+
   getActivityTypes(): Observable<IActivityType[]> {
     return this.http.get<IActivityType[]>(`${BASE_URL}/ActivityType`);
   }

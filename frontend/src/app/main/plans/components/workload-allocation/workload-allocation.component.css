@@ -23,7 +23,7 @@
 
     .period-separator {
       td {
-        border-bottom: 3px dashed #fff;
+        border-bottom: 3px solid #fff;
       }
     }
 

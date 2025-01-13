@@ -8,7 +8,6 @@ import { PlansService } from '../../plans.service';
 import { SnackBarService } from '../../../../shared/services/snack-bar.service';
 import { PlanActivityComponent } from '../plan-activity/plan-activity.component';
 import { IPlanActivityTable } from '../plan-activity/interfaces/IPlanActivityTable';
-import { UserService } from '../../../../auth/user.service';
 import { ConfirmDialogService } from '../../../confirm-dialog/confirm-dialog.service';
 import { WorkloadAllocationService } from '../workload-allocation/workload-allocation.service';
 
@@ -38,7 +37,6 @@ export class PlanComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private plansService: PlansService,
-    private userService: UserService,
     private workloadAllocationService: WorkloadAllocationService,
     private snackBarService: SnackBarService,
     private confirmDialogService: ConfirmDialogService
@@ -59,22 +57,14 @@ export class PlanComponent implements OnInit {
         }
       });
     }
-
-    this.userService.getWorkload().subscribe({
-      next: (workload) => {
-        this.userWorkload = workload;
-      },
-      error: () => {
-        this.snackBarService.openSnackBar('Erro ao obter CH do usuário');
-        this.router.navigateByUrl('main/plans');
-      },
-    });
   }
 
   getPlan(planId: string): void {
     this.plansService.getById(planId).subscribe({
       next: (res) => {
-        this.dataSource.data = res.activities;
+        this.dataSource.data = res.activities ?? [];
+        this.userWorkload = res.user?.workload ?? 0;
+
         this.workloadAllocationService.setPlanActivityTable(
           this.getPlanActivityData()
         );
@@ -116,7 +106,7 @@ export class PlanComponent implements OnInit {
     const dialogRef = this.dialog.open(PlanActivityComponent, {
       data: activity,
       maxWidth: '100vw',
-      width: '80%',
+      width: '90%',
     });
 
     dialogRef.afterClosed().subscribe((result?: IPlanActivity) => {
@@ -191,5 +181,20 @@ export class PlanComponent implements OnInit {
           });
         }
       });
+  }
+
+  getWorkloadAllocationReport(): void {
+    if (!this.planId) return;
+
+    this.plansService.getWorkloadAllocationReport(this.planId).subscribe({
+      next: (res) => {
+        const file = new Blob([res.body], { type: 'application/pdf' });
+        const fileURL = URL.createObjectURL(file);
+        window.open(fileURL);
+      },
+      error: () => {
+        this.snackBarService.openSnackBar('Erro ao gerar PDF');
+      },
+    });
   }
 }
