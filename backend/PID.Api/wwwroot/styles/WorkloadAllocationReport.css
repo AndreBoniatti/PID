@@ -1,0 +1,79 @@
+html,
+body {
+  padding: 0;
+  margin: 0;
+}
+
+@page {
+  margin: 0;
+}
+
+.template {
+  padding: 0;
+  margin: 0;
+}
+
+.header {
+  width: 99.5%;
+  height: 100px;
+  border: solid 1px;
+}
+
+.logo-img {
+  height: 100%;
+  width: auto;
+  max-width: 250px;
+  border-right: solid 1px;
+}
+
+.header-info {
+  width: 75%;
+  margin: 2px;
+  padding: 2px;
+  display: inline-block;
+  vertical-align: top;
+  list-style-type: none;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.header-info-item {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin: 15px 8px;
+}
+
+table {
+    width: 99.7%;
+    margin-top: 25px;
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+
+td, th {
+    padding: 5px;
+    text-align: center;
+    border: 1px solid #000 !important; 
+}
+
+th {
+    background-color: rgb(238, 238, 238);
+}
+
+.time-header, .time-column {
+    width: 100px;
+    background-color: rgb(238, 238, 238);
+}
+
+.upper-time {
+    font-weight: bold;
+}
+
+.lower-time {
+    font-style: italic;
+}
+
+.period-separator {
+    border-bottom: 3px solid #000;
+}

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using PID.Api.Extensions;
 using PID.Domain.Dtos;
 using PID.Domain.Enums;
+using PID.Domain.Reports;
 using PID.Domain.Repositories;
 
 namespace PID.Api.Controllers;
@@ -67,5 +68,20 @@ public class PlanController : MainController
         );
 
         return Ok(planExists);
+    }
+
+    [HttpGet("{id:guid}/WorkloadAllocationReport")]
+    public async Task<IActionResult> GetWorkloadAllocationReport(
+        [FromRoute] Guid id,
+        [FromServices] IPlanRepository planRepository,
+        [FromServices] IReport<PlanDto> report
+    )
+    {
+        var plan = await planRepository.GetPlanByIdAsync(GetUserId(), id);
+        if (plan == null)
+            return NotFound("Plano não encontrado");
+
+        var pdf = report.GetPdf(plan);
+        return File(pdf, "application/pdf");
     }
 }

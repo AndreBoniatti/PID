@@ -1,4 +1,9 @@
+using DinkToPdf;
+using DinkToPdf.Contracts;
 using PID.Api.Extensions;
+using PID.Api.Reports;
+using PID.Domain.Dtos;
+using PID.Domain.Reports;
 using PID.Domain.Repositories;
 using PID.Infra.Repositories;
 
@@ -13,11 +18,15 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
+
 builder.Services.AddTransient<IActivityTypeRepository, ActivityTypeRepository>();
 builder.Services.AddTransient<IPeriodRepository, PeriodRepository>();
 builder.Services.AddTransient<IPlanRepository, PlanRepository>();
 builder.Services.AddTransient<IPlanActivityRepository, PlanActivityRepository>();
 builder.Services.AddTransient<IUserRepository, UserRepository>();
+
+builder.Services.AddTransient<IReport<PlanDto>, WorkloadAllocationReport>();
 
 builder.Services.AddAuthConfiguration();
 
