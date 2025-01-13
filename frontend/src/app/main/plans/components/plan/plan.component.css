@@ -9,7 +9,18 @@
   font-size: 1.2rem;
 }
 
+.cancel-submit-button,
+.submit-button {
+  margin-right: 10px;
+}
+
 .activities-table {
   max-height: 410px;
   overflow: auto;
+}
+
+.print-container {
+  display: flex;
+  justify-content: end;
+  align-items: center;
 }

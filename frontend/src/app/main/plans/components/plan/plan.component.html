@@ -6,7 +6,35 @@
     <span class="activity-info"
       >CH Restante: <strong>{{ getWorkloadRemaining() }}</strong></span
     >
-    <button mat-raised-button (click)="openActivityDialog()">Adicionar</button>
+
+    <div>
+      <button
+        mat-raised-button
+        class="cancel-submit-button"
+        *ngIf="planIsSent()"
+        (click)="cancelPlanSubmission()"
+      >
+        <mat-icon>cancel_schedule_send</mat-icon>Cancelar Submissão
+      </button>
+
+      <button
+        mat-raised-button
+        class="submit-button"
+        *ngIf="planIsPending()"
+        [disabled]="getWorkloadRemaining() !== 0"
+        (click)="submitPlan()"
+      >
+        <mat-icon>send</mat-icon>Submeter
+      </button>
+
+      <button
+        mat-raised-button
+        [disabled]="!planIsPending() && plan"
+        (click)="openActivityDialog()"
+      >
+        <mat-icon>add</mat-icon>Adicionar Atividade
+      </button>
+    </div>
   </div>
 
   <div class="mat-elevation-z8 mt-3">
@@ -42,10 +70,18 @@
             Ações
           </th>
           <td mat-cell class="mat-cell" *matCellDef="let row">
-            <button mat-icon-button (click)="openActivityDialog(row)">
+            <button
+              mat-icon-button
+              [disabled]="!planIsPending()"
+              (click)="openActivityDialog(row)"
+            >
               <mat-icon>edit</mat-icon>
             </button>
-            <button mat-icon-button (click)="deleteActivity(row)">
+            <button
+              mat-icon-button
+              [disabled]="!planIsPending()"
+              (click)="deleteActivity(row)"
+            >
               <mat-icon>delete</mat-icon>
             </button>
           </td>
@@ -69,16 +105,18 @@
     </div>
   </div>
 
-  <div class="mt-3">
-    <button mat-icon-button (click)="getWorkloadAllocationReport()">
-      <mat-icon>print</mat-icon>
-    </button>
-  </div>
+  <div *ngIf="plan?.activities?.length ?? 0 > 0">
+    <div class="print-container mt-4">
+      <button mat-raised-button (click)="getWorkloadAllocationReport()">
+        <mat-icon>print</mat-icon> Imprimir
+      </button>
+    </div>
 
-  <div class="mt-3 pb-3">
-    <app-workload-allocation
-      #workloadAllocation
-      [readonlyMode]="true"
-    ></app-workload-allocation>
+    <div class="mt-3 pb-3">
+      <app-workload-allocation
+        #workloadAllocation
+        [readonlyMode]="true"
+      ></app-workload-allocation>
+    </div>
   </div>
 </div>

@@ -10,6 +10,9 @@ import { PlanActivityComponent } from '../plan-activity/plan-activity.component'
 import { IPlanActivityTable } from '../plan-activity/interfaces/IPlanActivityTable';
 import { ConfirmDialogService } from '../../../confirm-dialog/confirm-dialog.service';
 import { WorkloadAllocationService } from '../workload-allocation/workload-allocation.service';
+import { IPlan } from './interfaces/IPlan';
+import { EPlanSituation } from '../../enums/EPlanSituation';
+import { UserService } from '../../../../auth/user.service';
 
 @Component({
   standalone: false,
@@ -21,6 +24,7 @@ export class PlanComponent implements OnInit {
   readonly dialog = inject(MatDialog);
 
   planId: string | null = null;
+  plan?: IPlan;
 
   displayedColumns: string[] = [
     'description',
@@ -37,6 +41,7 @@ export class PlanComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private plansService: PlansService,
+    private userService: UserService,
     private workloadAllocationService: WorkloadAllocationService,
     private snackBarService: SnackBarService,
     private confirmDialogService: ConfirmDialogService
@@ -56,12 +61,23 @@ export class PlanComponent implements OnInit {
           this.router.navigateByUrl('main/plans');
         }
       });
+
+      this.userService.getWorkload().subscribe({
+        next: (workload) => {
+          this.userWorkload = workload;
+        },
+        error: () => {
+          this.snackBarService.openSnackBar('Erro ao obter CH do usuário');
+          this.router.navigateByUrl('main/plans');
+        },
+      });
     }
   }
 
   getPlan(planId: string): void {
     this.plansService.getById(planId).subscribe({
       next: (res) => {
+        this.plan = res;
         this.dataSource.data = res.activities ?? [];
         this.userWorkload = res.user?.workload ?? 0;
 
@@ -196,5 +212,53 @@ export class PlanComponent implements OnInit {
         this.snackBarService.openSnackBar('Erro ao gerar PDF');
       },
     });
+  }
+
+  planIsSent(): boolean {
+    return this.plan?.situation === EPlanSituation.SENT;
+  }
+
+  planIsPending(): boolean {
+    return this.plan?.situation === EPlanSituation.PENDING;
+  }
+
+  submitPlan(): void {
+    this.confirmDialogService
+      .openDialog(`Deseja submeter o plano?`)
+      .subscribe((confirm) => {
+        if (confirm && this.planId) {
+          this.plansService.submitPlan(this.planId).subscribe({
+            next: () => {
+              this.snackBarService.openSnackBar('Plano submetido com sucesso');
+              this.getPlan(this.planId!);
+            },
+            error: () => {
+              this.snackBarService.openSnackBar('Erro ao submeter plano');
+            },
+          });
+        }
+      });
+  }
+
+  cancelPlanSubmission(): void {
+    this.confirmDialogService
+      .openDialog(`Deseja cancelar a submissão do plano?`)
+      .subscribe((confirm) => {
+        if (confirm && this.planId) {
+          this.plansService.cancelPlanSubmission(this.planId).subscribe({
+            next: () => {
+              this.snackBarService.openSnackBar(
+                'Cancelada submissão do plano com sucesso'
+              );
+              this.getPlan(this.planId!);
+            },
+            error: () => {
+              this.snackBarService.openSnackBar(
+                'Erro ao cancelar submissão do plano'
+              );
+            },
+          });
+        }
+      });
   }
 }

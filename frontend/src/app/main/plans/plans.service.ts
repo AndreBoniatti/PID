@@ -39,6 +39,14 @@ export class PlansService {
     });
   }
 
+  submitPlan(id: string): Observable<any> {
+    return this.http.put(`${BASE_URL}/Plan/${id}/Submit`, {});
+  }
+
+  cancelPlanSubmission(id: string): Observable<any> {
+    return this.http.put(`${BASE_URL}/Plan/${id}/CancelSubmission`, {});
+  }
+
   getActivityTypes(): Observable<IActivityType[]> {
     return this.http.get<IActivityType[]>(`${BASE_URL}/ActivityType`);
   }
