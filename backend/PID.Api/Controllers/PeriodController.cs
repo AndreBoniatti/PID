@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PID.Api.Extensions;
+using PID.Domain.Commands;
 using PID.Domain.Dtos;
+using PID.Domain.Entities;
 using PID.Domain.Repositories;
 
 namespace PID.Api.Controllers;
@@ -11,6 +13,8 @@ namespace PID.Api.Controllers;
 [Route("api/[controller]")]
 public class PeriodController : MainController
 {
+    private readonly List<int> _semestersAllowed = new() { 1, 2 };
+
     [HttpGet]
     public IActionResult GetPeriods(
         [FromServices] IPeriodRepository periodRepository
@@ -27,5 +31,42 @@ public class PeriodController : MainController
             .ToList();
 
         return Ok(periods);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> PostPeriod(
+        [FromBody] CreatePeriodCommand command,
+        [FromServices] IPeriodRepository periodRepository
+    )
+    {
+        if (!_semestersAllowed.Contains(command.Semester))
+            return BadRequest("Semestre inválido");
+
+        var period = new Period(command.Year, command.Semester);
+
+        periodRepository.Add(period);
+        await periodRepository.SaveChangesAsync();
+
+        return Ok();
+    }
+
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> DeletePeriod(
+        [FromRoute] Guid id,
+        [FromServices] IPeriodRepository periodRepository,
+        [FromServices] IPlanRepository planRepository
+    )
+    {
+        var period = periodRepository.Find(x => x.Id == id).FirstOrDefault();
+        if (period == null)
+            return NotFound("Período não encontrada");
+
+        if (planRepository.Exists(x => x.PeriodId == id))
+            return BadRequest("Período já tem planos vinculado");
+
+        periodRepository.Remove(period);
+        await periodRepository.SaveChangesAsync();
+
+        return Ok();
     }
 }
