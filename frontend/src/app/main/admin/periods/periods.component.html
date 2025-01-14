@@ -1,0 +1,36 @@
+<div class="mat-elevation-z8 m-3">
+  <table mat-table class="mat-table" [dataSource]="periods">
+    <ng-container matColumnDef="description">
+      <th mat-header-cell class="mat-header-cell" *matHeaderCellDef>
+        Descrição
+      </th>
+      <td mat-cell class="mat-cell" *matCellDef="let row">
+        {{ row.description }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell class="mat-header-cell" *matHeaderCellDef>Ações</th>
+      <td mat-cell class="mat-cell" *matCellDef="let row">
+        <button mat-icon-button>
+          <mat-icon>visibility</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <tr
+      mat-header-row
+      class="mat-header-row"
+      *matHeaderRowDef="displayedColumns"
+    ></tr>
+    <tr
+      mat-row
+      class="mat-row"
+      *matRowDef="let row; columns: displayedColumns"
+    ></tr>
+
+    <tr *matNoDataRow>
+      <td class="mat-cell" colspan="4">Nenhum registro encontrado</td>
+    </tr>
+  </table>
+</div>
