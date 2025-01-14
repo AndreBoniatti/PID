@@ -8,6 +8,7 @@ import { environment } from '../../environments/environment';
 import { IAuthToken } from './interfaces/IAuthToken';
 import { LocalStorageService } from '../shared/services/local-storage.service';
 import { IUserInfo } from './interfaces/IUserInfo';
+import { EUserType } from './enums/EUserType';
 
 const BASE_URL = environment.api;
 const TOKEN_KEY = 'auth-token';
@@ -63,5 +64,10 @@ export class AuthService {
     } else {
       return null;
     }
+  }
+
+  userIsAdmin(userInfo: IUserInfo | null): boolean {
+    if (!userInfo) userInfo = this.getUserInfo();
+    return userInfo?.type.toString() === EUserType.ADMIN.toString();
   }
 }

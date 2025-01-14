@@ -3,7 +3,10 @@ import { Router } from '@angular/router';
 
 import { PlansService } from './plans.service';
 import { IPlans } from './interfaces/IPlans';
-import { getPlanSituationDescription } from './enums/EPlanSituation';
+import {
+  EPlanSituation,
+  getPlanSituationDescription,
+} from './enums/EPlanSituation';
 
 @Component({
   standalone: false,
@@ -31,12 +34,12 @@ export class PlansComponent implements OnInit {
     return getPlanSituationDescription(situation);
   }
 
-  viewPlan(): void {
-    this.router.navigateByUrl('main/plan');
-  }
-
-  updatePlan(plandId: string): void {
+  updatePlan(plandId?: string): void {
     if (plandId) this.router.navigateByUrl(`main/plan/${plandId}`);
     else this.router.navigateByUrl('main/plan');
+  }
+
+  planIsApproved(plan: IPlans): boolean {
+    return plan.situation === EPlanSituation.APPROVED;
   }
 }

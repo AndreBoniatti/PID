@@ -1,6 +1,7 @@
 import { EPlanSituation } from '../enums/EPlanSituation';
 
 export interface IPlans {
-  description: string;
+  id?: string;
+  period: string;
   situation: EPlanSituation;
 }

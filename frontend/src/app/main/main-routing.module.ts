@@ -4,6 +4,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { MainComponent } from './main.component';
 import { PlansComponent } from './plans/plans.component';
 import { PlanComponent } from './plans/components/plan/plan.component';
+import { AuthGuard } from '../auth/guards/auth-guard';
+import { AdminGuard } from '../auth/guards/admin-guard';
 
 const routes: Routes = [
   {
@@ -26,6 +28,12 @@ const routes: Routes = [
       {
         path: 'plan/:id',
         component: PlanComponent,
+      },
+      {
+        path: 'admin',
+        loadChildren: () =>
+          import('./admin/admin.module').then((admin) => admin.AdminModule),
+        canActivate: [AuthGuard, AdminGuard],
       },
     ],
   },

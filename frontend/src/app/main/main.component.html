@@ -1,7 +1,12 @@
 <mat-toolbar>
-  <img [src]="userInfo?.picture" class="user-image" />
-  <span>{{ userInfo?.name }}</span>
+  <img src="logo.png" class="logo-image" (click)="navigateToHome()" />
+  <span>PID</span>
   <span class="spacer"></span>
+
+  <button mat-raised-button *ngIf="userIsAdmin" (click)="navigateToAdminArea()">
+    <mat-icon>admin_panel_settings</mat-icon> Área Administrativa
+  </button>
+
   <button mat-icon-button>
     <mat-icon>notifications</mat-icon>
   </button>
