@@ -10,13 +10,15 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatRadioModule } from '@angular/material/radio';
 
 import { AdminRoutingModule } from './admin-routing.module';
 import { AdminComponent } from './admin.component';
 import { PeriodsComponent } from './periods/periods.component';
+import { CreatePeriodComponent } from './periods/components/create-period/create-period.component';
 
 @NgModule({
-  declarations: [AdminComponent, PeriodsComponent],
+  declarations: [AdminComponent, PeriodsComponent, CreatePeriodComponent],
   imports: [
     CommonModule,
     AdminRoutingModule,
@@ -30,6 +32,7 @@ import { PeriodsComponent } from './periods/periods.component';
     MatInputModule,
     MatSelectModule,
     MatSnackBarModule,
+    MatRadioModule,
   ],
 })
 export class AdminModule {}
