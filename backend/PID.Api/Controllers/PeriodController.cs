@@ -4,6 +4,7 @@ using PID.Api.Extensions;
 using PID.Domain.Commands;
 using PID.Domain.Dtos;
 using PID.Domain.Entities;
+using PID.Domain.Enums;
 using PID.Domain.Repositories;
 
 namespace PID.Api.Controllers;
@@ -31,6 +32,20 @@ public class PeriodController : MainController
             .ToList();
 
         return Ok(periods);
+    }
+
+    [HttpGet("{id:guid}/Plans")]
+    public async Task<IActionResult> GetPeriodPlans(
+        [FromServices] IPlanRepository planRepository,
+        [FromRoute] Guid id,
+        [FromQuery] string? userName,
+        [FromQuery] EPlanSituation? planSituation,
+        [FromQuery] int pageIndex = 0,
+        [FromQuery] int pageSize = 5
+    )
+    {
+        var periodPlans = await planRepository.GetPeriodPlansAsync(id, pageIndex, pageSize, userName, planSituation);
+        return Ok(periodPlans);
     }
 
     [HttpPost]

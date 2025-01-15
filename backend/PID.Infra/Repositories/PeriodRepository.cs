@@ -19,6 +19,5 @@ public class PeriodRepository : RepositoryBase<Period>, IPeriodRepository
             .OrderByDescending(x => x.Year)
             .ThenByDescending(x => x.Semester)
             .FirstOrDefaultAsync();
-
     }
 }
