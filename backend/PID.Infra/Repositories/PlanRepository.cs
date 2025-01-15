@@ -32,12 +32,13 @@ public class PlanRepository : RepositoryBase<Plan>, IPlanRepository
     {
         return await _pIDContext.Plans
             .AsNoTracking()
-            .Where(x => x.UserId == userId && x.Id == id)
+            .Where(x => x.Id == id)
             .Select(x => new PlanDto
             {
                 Situation = x.Situation,
                 Observation = x.Observation,
                 Period = x.Period == null ? string.Empty : x.Period.GetInfo(),
+                OwnerUser = x.UserId == userId,
                 User = x.User == null ? null : new UserDto
                 {
                     Name = x.User.Name,
