@@ -13,6 +13,7 @@ public class Plan : EntityBase
 
     public EPlanSituation Situation { get; private set; }
     public string? Observation { get; private set; }
+    public string? ReasonForRejection { get; private set; }
 
     public Guid UserId { get; private set; }
     public virtual User? User { get; private set; }
@@ -26,5 +27,11 @@ public class Plan : EntityBase
     {
         Situation = situation;
         UpdatedAt = DateTime.UtcNow;
+    }
+
+    public void RejectPlan(string reason)
+    {
+        ReasonForRejection = reason;
+        SetSituation(EPlanSituation.PENDING);
     }
 }

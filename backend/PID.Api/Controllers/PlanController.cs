@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PID.Api.Extensions;
+using PID.Domain.Commands;
 using PID.Domain.Dtos;
 using PID.Domain.Enums;
 using PID.Domain.Reports;
@@ -125,6 +126,58 @@ public class PlanController : MainController
             return BadRequest("Situação inválida");
 
         plan.SetSituation(EPlanSituation.PENDING);
+        planRepository.Update(plan);
+        await planRepository.SaveChangesAsync();
+
+        return Ok();
+    }
+
+    [Authorize(Policy = "AdminPolicy")]
+    [HttpPut("{id:guid}/Approve")]
+    public async Task<IActionResult> ApprovePlan(
+        [FromRoute] Guid id,
+        [FromServices] IPlanRepository planRepository
+    )
+    {
+        var plan = planRepository
+            .Find(x => x.Id == id)
+            .FirstOrDefault();
+
+        if (plan == null)
+            return NotFound("Plano não encontrado");
+
+        if (plan.Situation != EPlanSituation.SENT)
+            return BadRequest("Situação inválida");
+
+        plan.SetSituation(EPlanSituation.APPROVED);
+        planRepository.Update(plan);
+        await planRepository.SaveChangesAsync();
+
+        return Ok();
+    }
+
+    [Authorize(Policy = "AdminPolicy")]
+    [HttpPut("{id:guid}/Reject")]
+    public async Task<IActionResult> RejectPlan(
+        [FromRoute] Guid id,
+        [FromBody] RejectPlanCommand command,
+        [FromServices] IPlanRepository planRepository
+    )
+    {
+        if (string.IsNullOrWhiteSpace(command.Reason))
+            return BadRequest("Informe o motivo da rejeição");
+
+        var plan = planRepository
+            .Find(x => x.Id == id)
+            .FirstOrDefault();
+
+        if (plan == null)
+            return NotFound("Plano não encontrado");
+
+        if (plan.Situation != EPlanSituation.SENT)
+            return BadRequest("Situação inválida");
+
+        plan.RejectPlan(command.Reason);
         planRepository.Update(plan);
         await planRepository.SaveChangesAsync();
 

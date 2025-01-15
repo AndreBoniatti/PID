@@ -37,6 +37,7 @@ public class PlanRepository : RepositoryBase<Plan>, IPlanRepository
             {
                 Situation = x.Situation,
                 Observation = x.Observation,
+                ReasonForRejection = x.ReasonForRejection,
                 Period = x.Period == null ? string.Empty : x.Period.GetInfo(),
                 OwnerUser = x.UserId == userId,
                 User = x.User == null ? null : new UserDto
