@@ -5,6 +5,9 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { IPeriod } from './interfaces/IPeriod';
 import { ICreatePeriod } from './components/create-period/interfaces/ICreatePeriod';
+import { IPagedList } from '../../../shared/interfaces/IPagedList';
+import { IPeriodPlan } from './components/period-plans/interfaces/IPeriodPlan';
+import { EPlanSituation } from '../../plans/enums/EPlanSituation';
 
 const BASE_URL = environment.api;
 
@@ -16,6 +19,22 @@ export class PeriodsService {
 
   getAll(): Observable<IPeriod[]> {
     return this.http.get<IPeriod[]>(`${BASE_URL}/Period`);
+  }
+
+  getPeriodPlans(
+    id: string,
+    pageIndex = 0,
+    pageSize = 5,
+    userName?: string,
+    planSituation?: EPlanSituation
+  ): Observable<IPagedList<IPeriodPlan>> {
+    let url = `${BASE_URL}/Period/${id}/Plans?pageIndex=${pageIndex}&pageSize=${pageSize}`;
+
+    if (userName) url += `&userName=${userName}`;
+    if (planSituation || planSituation === 0)
+      url += `&planSituation=${planSituation}`;
+
+    return this.http.get<IPagedList<IPeriodPlan>>(url);
   }
 
   createPeriod(data: ICreatePeriod): Observable<any> {

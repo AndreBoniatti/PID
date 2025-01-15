@@ -6,6 +6,7 @@ import { PeriodsService } from './periods.service';
 import { IPeriod } from './interfaces/IPeriod';
 import { CreatePeriodComponent } from './components/create-period/create-period.component';
 import { SnackBarService } from '../../../shared/services/snack-bar.service';
+import { PeriodPlansComponent } from './components/period-plans/period-plans.component';
 
 @Component({
   standalone: false,
@@ -41,6 +42,14 @@ export class PeriodsComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe((saved) => {
       if (saved) this.getPeriods();
+    });
+  }
+
+  openPeriodPlans(period: IPeriod): void {
+    this.dialog.open(PeriodPlansComponent, {
+      data: period,
+      maxWidth: '95vw',
+      width: '800px',
     });
   }
 
