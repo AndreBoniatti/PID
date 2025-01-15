@@ -47,6 +47,14 @@ export class PlansService {
     return this.http.put(`${BASE_URL}/Plan/${id}/CancelSubmission`, {});
   }
 
+  approvePlan(id: string): Observable<any> {
+    return this.http.put(`${BASE_URL}/Plan/${id}/Approve`, {});
+  }
+
+  rejectPlan(id: string, reason: string): Observable<any> {
+    return this.http.put(`${BASE_URL}/Plan/${id}/Reject`, { reason: reason });
+  }
+
   getActivityTypes(): Observable<IActivityType[]> {
     return this.http.get<IActivityType[]>(`${BASE_URL}/ActivityType`);
   }

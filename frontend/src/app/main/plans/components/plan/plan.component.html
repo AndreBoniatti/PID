@@ -1,13 +1,23 @@
 <div [ngClass]="{ 'm-3': !isDialogMode() }">
+  <div
+    class="rejection-warning"
+    *ngIf="!isDialogMode() && planIsPending() && plan?.reasonForRejection"
+  >
+    <h2>Seu plano foi rejeitado</h2>
+    <p>{{ plan?.reasonForRejection }}</p>
+  </div>
+
   <div class="admin-activity-container" *ngIf="isDialogMode() && planIsSent()">
-    <button mat-flat-button class="approve-button">
+    <button mat-flat-button class="approve-button" (click)="approvePlan()">
       <mat-icon>check</mat-icon>Aprovar
     </button>
 
-    <button mat-flat-button><mat-icon>close</mat-icon>Rejeitar</button>
+    <button mat-flat-button (click)="rejectPlan()">
+      <mat-icon>close</mat-icon>Rejeitar
+    </button>
   </div>
 
-  <div class="activity-container" *ngIf="!isDialogMode()">
+  <div class="activity-container" *ngIf="!isDialogMode() && !planIsApproved()">
     <span class="activity-info"
       >CH do Usuário: <strong>{{ userWorkload }}</strong></span
     >

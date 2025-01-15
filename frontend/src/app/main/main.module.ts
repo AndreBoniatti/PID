@@ -19,6 +19,7 @@ import { PlanActivityComponent } from './plans/components/plan-activity/plan-act
 import { WorkloadAllocationComponent } from './plans/components/workload-allocation/workload-allocation.component';
 import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
 import { PlanDialogComponent } from './plans/components/plan-dialog/plan-dialog.component';
+import { RejectPlanDialogComponent } from './plans/components/reject-plan-dialog/reject-plan-dialog.component';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,7 @@ import { PlanDialogComponent } from './plans/components/plan-dialog/plan-dialog.
     WorkloadAllocationComponent,
     ConfirmDialogComponent,
     PlanDialogComponent,
+    RejectPlanDialogComponent,
   ],
   imports: [
     CommonModule,

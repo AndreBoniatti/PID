@@ -13,6 +13,7 @@ import { WorkloadAllocationService } from '../workload-allocation/workload-alloc
 import { IPlan } from './interfaces/IPlan';
 import { EPlanSituation } from '../../enums/EPlanSituation';
 import { UserService } from '../../../../auth/user.service';
+import { RejectPlanDialogComponent } from '../reject-plan-dialog/reject-plan-dialog.component';
 
 @Component({
   standalone: false,
@@ -227,12 +228,16 @@ export class PlanComponent implements OnInit {
     });
   }
 
+  planIsPending(): boolean {
+    return this.plan?.situation === EPlanSituation.PENDING;
+  }
+
   planIsSent(): boolean {
     return this.plan?.situation === EPlanSituation.SENT;
   }
 
-  planIsPending(): boolean {
-    return this.plan?.situation === EPlanSituation.PENDING;
+  planIsApproved(): boolean {
+    return this.plan?.situation === EPlanSituation.APPROVED;
   }
 
   submitPlan(): void {
@@ -273,6 +278,45 @@ export class PlanComponent implements OnInit {
           });
         }
       });
+  }
+
+  approvePlan(): void {
+    this.confirmDialogService
+      .openDialog(`Confirma aprovação do plano?`)
+      .subscribe((confirm) => {
+        if (confirm && this.planId) {
+          this.plansService.approvePlan(this.planId).subscribe({
+            next: () => {
+              this.snackBarService.openSnackBar('Plano aprovado com sucesso');
+              this.getPlan(this.planId!);
+            },
+            error: () => {
+              this.snackBarService.openSnackBar('Erro ao aprovar plano');
+            },
+          });
+        }
+      });
+  }
+
+  rejectPlan(): void {
+    const dialogRef = this.dialog.open(RejectPlanDialogComponent, {
+      maxWidth: '95vw',
+      width: '500px',
+    });
+
+    dialogRef.afterClosed().subscribe((reason) => {
+      if (reason && this.planId) {
+        this.plansService.rejectPlan(this.planId, reason).subscribe({
+          next: () => {
+            this.snackBarService.openSnackBar('Plano rejeitado com sucesso');
+            this.getPlan(this.planId!);
+          },
+          error: () => {
+            this.snackBarService.openSnackBar('Erro ao rejeitar plano');
+          },
+        });
+      }
+    });
   }
 
   redirectUserToHome(): void {

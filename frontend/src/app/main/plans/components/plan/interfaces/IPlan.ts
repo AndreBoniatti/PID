@@ -5,6 +5,7 @@ import { IPlanActivity } from '../../plan-activity/interfaces/IPlanActivity';
 export interface IPlan {
   situation: EPlanSituation;
   observation?: string;
+  reasonForRejection?: string;
   period: string;
   ownerUser: boolean;
   user?: IUser;

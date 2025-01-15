@@ -1,3 +1,25 @@
+.rejection-warning {
+  background-color: #2c1a09;
+  border-left: 6px solid #ffa726;
+  color: #ffa726;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.rejection-warning h2 {
+  margin-top: 0;
+  margin-bottom: 8px;
+  font-size: 1.3rem;
+}
+
+.rejection-warning p {
+  margin: 0;
+  font-size: 1rem;
+  white-space: pre-wrap;
+}
+
 .admin-activity-container {
   display: flex;
   justify-content: end;
