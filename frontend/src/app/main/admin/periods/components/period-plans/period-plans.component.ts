@@ -1,5 +1,9 @@
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import {
+  MAT_DIALOG_DATA,
+  MatDialog,
+  MatDialogRef,
+} from '@angular/material/dialog';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 
 import { IPeriod } from '../../interfaces/IPeriod';
@@ -12,6 +16,8 @@ import { SnackBarService } from '../../../../../shared/services/snack-bar.servic
 import { Debounce } from '../../../../../shared/helpers/Debounce';
 import { IPagedList } from '../../../../../shared/interfaces/IPagedList';
 import { IPeriodPlan } from './interfaces/IPeriodPlan';
+import { PlanDialogComponent } from '../../../../plans/components/plan-dialog/plan-dialog.component';
+import { IPlanDialog } from '../../../../plans/components/plan-dialog/interfaces/IPlanDialog';
 
 @Component({
   standalone: false,
@@ -20,6 +26,7 @@ import { IPeriodPlan } from './interfaces/IPeriodPlan';
   styleUrl: './period-plans.component.css',
 })
 export class PeriodPlansComponent implements OnInit {
+  readonly dialog = inject(MatDialog);
   data?: IPeriod = inject(MAT_DIALOG_DATA);
 
   displayedColumns: string[] = [
@@ -87,6 +94,17 @@ export class PeriodPlansComponent implements OnInit {
 
   getSituation(situation: number): string {
     return getPlanSituationDescription(situation);
+  }
+
+  openPlan(periodPlan: IPeriodPlan): void {
+    this.dialog.open(PlanDialogComponent, {
+      data: {
+        period: this.data?.description ?? '',
+        periodPlan: periodPlan,
+      } as IPlanDialog,
+      maxWidth: '95vw',
+      width: '1100px',
+    });
   }
 
   close(): void {

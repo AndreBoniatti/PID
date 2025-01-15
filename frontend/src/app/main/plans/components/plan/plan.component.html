@@ -1,5 +1,13 @@
-<div class="m-3">
-  <div class="activity-container">
+<div [ngClass]="{ 'm-3': !isDialogMode() }">
+  <div class="admin-activity-container" *ngIf="isDialogMode() && planIsSent()">
+    <button mat-flat-button class="approve-button">
+      <mat-icon>check</mat-icon>Aprovar
+    </button>
+
+    <button mat-flat-button><mat-icon>close</mat-icon>Rejeitar</button>
+  </div>
+
+  <div class="activity-container" *ngIf="!isDialogMode()">
     <span class="activity-info"
       >CH do Usuário: <strong>{{ userWorkload }}</strong></span
     >
@@ -72,14 +80,14 @@
           <td mat-cell class="mat-cell" *matCellDef="let row">
             <button
               mat-icon-button
-              [disabled]="!planIsPending()"
+              [disabled]="!planIsPending() || isDialogMode()"
               (click)="openActivityDialog(row)"
             >
               <mat-icon>edit</mat-icon>
             </button>
             <button
               mat-icon-button
-              [disabled]="!planIsPending()"
+              [disabled]="!planIsPending() || isDialogMode()"
               (click)="deleteActivity(row)"
             >
               <mat-icon>delete</mat-icon>

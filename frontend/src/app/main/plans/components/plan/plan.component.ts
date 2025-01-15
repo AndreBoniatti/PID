@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatTableDataSource } from '@angular/material/table';
@@ -16,12 +16,15 @@ import { UserService } from '../../../../auth/user.service';
 
 @Component({
   standalone: false,
+  selector: 'app-plan',
 
   templateUrl: './plan.component.html',
   styleUrl: './plan.component.css',
 })
 export class PlanComponent implements OnInit {
   readonly dialog = inject(MatDialog);
+
+  @Input() planIdDialogMode?: string;
 
   planId: string | null = null;
   plan?: IPlan;
@@ -48,7 +51,8 @@ export class PlanComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.planId = this.route.snapshot.paramMap.get('id');
+    this.planId =
+      this.planIdDialogMode ?? this.route.snapshot.paramMap.get('id');
 
     if (this.planId) this.getPlan(this.planId);
     else {
@@ -58,7 +62,7 @@ export class PlanComponent implements OnInit {
             'Usuário já possui plano nesse período'
           );
 
-          this.router.navigateByUrl('main/plans');
+          this.redirectUserToHome();
         }
       });
 
@@ -68,15 +72,24 @@ export class PlanComponent implements OnInit {
         },
         error: () => {
           this.snackBarService.openSnackBar('Erro ao obter CH do usuário');
-          this.router.navigateByUrl('main/plans');
+          this.redirectUserToHome();
         },
       });
     }
   }
 
+  isDialogMode(): boolean {
+    return !!this.planIdDialogMode;
+  }
+
   getPlan(planId: string): void {
     this.plansService.getById(planId).subscribe({
       next: (res) => {
+        if (!res.ownerUser && !this.isDialogMode()) {
+          this.redirectUserToHome();
+          return;
+        }
+
         this.plan = res;
         this.dataSource.data = res.activities ?? [];
         this.userWorkload = res.user?.workload ?? 0;
@@ -87,7 +100,7 @@ export class PlanComponent implements OnInit {
       },
       error: () => {
         this.snackBarService.openSnackBar('Erro ao obter informações do plano');
-        this.router.navigateByUrl('main/plans');
+        this.redirectUserToHome();
       },
     });
   }
@@ -260,5 +273,9 @@ export class PlanComponent implements OnInit {
           });
         }
       });
+  }
+
+  redirectUserToHome(): void {
+    this.router.navigateByUrl('main/plans');
   }
 }

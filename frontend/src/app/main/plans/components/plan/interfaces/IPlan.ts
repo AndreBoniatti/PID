@@ -6,6 +6,7 @@ export interface IPlan {
   situation: EPlanSituation;
   observation?: string;
   period: string;
+  ownerUser: boolean;
   user?: IUser;
   activities?: IPlanActivity[];
 }
