@@ -1,4 +1,11 @@
-import { Component, inject, Input, OnInit } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  inject,
+  Input,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatTableDataSource } from '@angular/material/table';
@@ -26,6 +33,7 @@ export class PlanComponent implements OnInit {
   readonly dialog = inject(MatDialog);
 
   @Input() planIdDialogMode?: string;
+  @Output() situationWasChanged = new EventEmitter<boolean>();
 
   planId: string | null = null;
   plan?: IPlan;
@@ -288,7 +296,7 @@ export class PlanComponent implements OnInit {
           this.plansService.approvePlan(this.planId).subscribe({
             next: () => {
               this.snackBarService.openSnackBar('Plano aprovado com sucesso');
-              this.getPlan(this.planId!);
+              this.situationWasChanged.emit(true);
             },
             error: () => {
               this.snackBarService.openSnackBar('Erro ao aprovar plano');
@@ -309,7 +317,7 @@ export class PlanComponent implements OnInit {
         this.plansService.rejectPlan(this.planId, reason).subscribe({
           next: () => {
             this.snackBarService.openSnackBar('Plano rejeitado com sucesso');
-            this.getPlan(this.planId!);
+            this.situationWasChanged.emit(true);
           },
           error: () => {
             this.snackBarService.openSnackBar('Erro ao rejeitar plano');

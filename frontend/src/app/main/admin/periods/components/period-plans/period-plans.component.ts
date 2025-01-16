@@ -86,6 +86,10 @@ export class PeriodPlansComponent implements OnInit {
     this.getPeriodPlans(event.pageIndex, event.pageSize);
   }
 
+  refreshPeriodPlans(): void {
+    this.getPeriodPlans(this.pageIndex, this.pageSize);
+  }
+
   @Debounce(500)
   applyFilter(): void {
     this.getPeriodPlans(0, this.pageSize);
@@ -97,13 +101,17 @@ export class PeriodPlansComponent implements OnInit {
   }
 
   openPlan(periodPlan: IPeriodPlan): void {
-    this.dialog.open(PlanDialogComponent, {
+    const dialogRef = this.dialog.open(PlanDialogComponent, {
       data: {
         period: this.data?.description ?? '',
         periodPlan: periodPlan,
       } as IPlanDialog,
       maxWidth: '95vw',
       width: '1100px',
+    });
+
+    dialogRef.afterClosed().subscribe((situationWasChanged) => {
+      if (situationWasChanged) this.refreshPeriodPlans();
     });
   }
 

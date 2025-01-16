@@ -14,7 +14,11 @@ export class PlanDialogComponent {
 
   constructor(private dialogRef: MatDialogRef<PlanDialogComponent>) {}
 
-  close(): void {
-    this.dialogRef.close();
+  situationWasChanged(situationWasChanged: boolean): void {
+    if (situationWasChanged) this.close(situationWasChanged);
+  }
+
+  close(situationWasChanged?: boolean): void {
+    this.dialogRef.close(situationWasChanged);
   }
 }

@@ -1,6 +1,9 @@
 <h2 mat-dialog-title>{{ data?.period }} - {{ data?.periodPlan?.userName }}</h2>
 <mat-dialog-content class="mat-typography">
-  <app-plan [planIdDialogMode]="data?.periodPlan?.planId"></app-plan>
+  <app-plan
+    [planIdDialogMode]="data?.periodPlan?.planId"
+    (situationWasChanged)="situationWasChanged($event)"
+  ></app-plan>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button mat-button (click)="close()">Fechar</button>
