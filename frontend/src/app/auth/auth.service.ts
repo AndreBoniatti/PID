@@ -47,7 +47,7 @@ export class AuthService {
 
     setTimeout(() => {
       location.reload();
-    });
+    }, 200);
   }
 
   getUserInfo(): IUserInfo | null {

@@ -1,3 +1,14 @@
-<div class="auth-section">
-  <app-auth></app-auth>
+<div class="m-3">
+  <div class="auth-section">
+    <app-auth></app-auth>
+  </div>
+
+  @for (period of periods; track period; let index = $index) {
+  <div class="period-resume">
+    <app-period-resume
+      [period]="period"
+      [expandedByDefault]="index === 0"
+    ></app-period-resume>
+  </div>
+  }
 </div>

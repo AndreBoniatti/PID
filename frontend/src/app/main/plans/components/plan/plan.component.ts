@@ -21,6 +21,8 @@ import { IPlan } from './interfaces/IPlan';
 import { EPlanSituation } from '../../enums/EPlanSituation';
 import { UserService } from '../../../../auth/user.service';
 import { RejectPlanDialogComponent } from '../reject-plan-dialog/reject-plan-dialog.component';
+import { AuthService } from '../../../../auth/auth.service';
+import { IUserInfo } from '../../../../auth/interfaces/IUserInfo';
 
 @Component({
   standalone: false,
@@ -49,17 +51,26 @@ export class PlanComponent implements OnInit {
 
   userWorkload = 0;
 
+  authenticatedUser: IUserInfo | null = null;
+  authenticatedUserIsAdmin = false;
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private plansService: PlansService,
     private userService: UserService,
+    private authService: AuthService,
     private workloadAllocationService: WorkloadAllocationService,
     private snackBarService: SnackBarService,
     private confirmDialogService: ConfirmDialogService
   ) {}
 
   ngOnInit(): void {
+    this.authenticatedUser = this.authService.getUserInfo();
+    this.authenticatedUserIsAdmin = this.authService.userIsAdmin(
+      this.authenticatedUser
+    );
+
     this.planId =
       this.planIdDialogMode ?? this.route.snapshot.paramMap.get('id');
 
@@ -89,6 +100,10 @@ export class PlanComponent implements OnInit {
 
   isDialogMode(): boolean {
     return !!this.planIdDialogMode;
+  }
+
+  isOwnerUser(): boolean {
+    return this.plan?.ownerUser ?? false;
   }
 
   getPlan(planId: string): void {
@@ -328,6 +343,6 @@ export class PlanComponent implements OnInit {
   }
 
   redirectUserToHome(): void {
-    this.router.navigateByUrl('main/plans');
+    if (this.authenticatedUser) this.router.navigateByUrl('main/plans');
   }
 }

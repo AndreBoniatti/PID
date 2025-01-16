@@ -1,13 +1,21 @@
 <div [ngClass]="{ 'm-3': !isDialogMode() }">
   <div
     class="rejection-warning"
-    *ngIf="!isDialogMode() && planIsPending() && plan?.reasonForRejection"
+    *ngIf="
+      isOwnerUser() &&
+      !isDialogMode() &&
+      planIsPending() &&
+      plan?.reasonForRejection
+    "
   >
     <h2>Seu plano foi rejeitado</h2>
     <p>{{ plan?.reasonForRejection }}</p>
   </div>
 
-  <div class="admin-activity-container" *ngIf="isDialogMode() && planIsSent()">
+  <div
+    class="admin-activity-container"
+    *ngIf="authenticatedUserIsAdmin && isDialogMode() && planIsSent()"
+  >
     <button mat-flat-button class="approve-button" (click)="approvePlan()">
       <mat-icon>check</mat-icon>Aprovar
     </button>
@@ -17,7 +25,13 @@
     </button>
   </div>
 
-  <div class="activity-container" *ngIf="!isDialogMode() && !planIsApproved()">
+  <div
+    class="activity-container"
+    *ngIf="
+      (!plan && authenticatedUser) ||
+      (isOwnerUser() && !isDialogMode() && !planIsApproved())
+    "
+  >
     <span class="activity-info"
       >CH do Usuário: <strong>{{ userWorkload }}</strong></span
     >
@@ -47,7 +61,7 @@
 
       <button
         mat-raised-button
-        [disabled]="!planIsPending() && plan"
+        [disabled]="plan && !planIsPending()"
         (click)="openActivityDialog()"
       >
         <mat-icon>add</mat-icon>Adicionar Atividade
@@ -84,20 +98,30 @@
         </ng-container>
 
         <ng-container matColumnDef="actions">
-          <th mat-header-cell class="mat-header-cell" *matHeaderCellDef>
+          <th
+            mat-header-cell
+            class="mat-header-cell"
+            *matHeaderCellDef
+            [hidden]="plan && !isOwnerUser()"
+          >
             Ações
           </th>
-          <td mat-cell class="mat-cell" *matCellDef="let row">
+          <td
+            mat-cell
+            class="mat-cell"
+            *matCellDef="let row"
+            [hidden]="plan && !isOwnerUser()"
+          >
             <button
               mat-icon-button
-              [disabled]="!planIsPending() || isDialogMode()"
+              [disabled]="!isOwnerUser() || !planIsPending() || isDialogMode()"
               (click)="openActivityDialog(row)"
             >
               <mat-icon>edit</mat-icon>
             </button>
             <button
               mat-icon-button
-              [disabled]="!planIsPending() || isDialogMode()"
+              [disabled]="!isOwnerUser() || !planIsPending() || isDialogMode()"
               (click)="deleteActivity(row)"
             >
               <mat-icon>delete</mat-icon>

@@ -21,6 +21,16 @@ export class PeriodsService {
     return this.http.get<IPeriod[]>(`${BASE_URL}/Period`);
   }
 
+  getApprovedPeriodPlans(
+    id: string,
+    pageIndex = 0,
+    pageSize = 5
+  ): Observable<IPagedList<IPeriodPlan>> {
+    return this.http.get<IPagedList<IPeriodPlan>>(
+      `${BASE_URL}/Period/${id}/ApprovedPlans?pageIndex=${pageIndex}&pageSize=${pageSize}`
+    );
+  }
+
   getPeriodPlans(
     id: string,
     pageIndex = 0,
