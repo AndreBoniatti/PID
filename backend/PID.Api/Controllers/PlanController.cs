@@ -40,13 +40,16 @@ public class PlanController : MainController
         return Ok(userPlans);
     }
 
+    [AllowAnonymous]
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetPlanById(
         [FromRoute] Guid id,
         [FromServices] IPlanRepository planRepository
     )
     {
-        var plan = await planRepository.GetPlanByIdAsync(GetUserId(), id);
+        Guid? userId = CallerIsAuthenticated() ? GetUserId() : null;
+
+        var plan = await planRepository.GetPlanByIdAsync(userId, id);
         if (plan == null)
             return NotFound("Plano não encontrado");
 
@@ -71,6 +74,7 @@ public class PlanController : MainController
         return Ok(planExists);
     }
 
+    [AllowAnonymous]
     [HttpGet("{id:guid}/WorkloadAllocationReport")]
     public async Task<IActionResult> GetWorkloadAllocationReport(
         [FromRoute] Guid id,
@@ -78,7 +82,9 @@ public class PlanController : MainController
         [FromServices] IReport<PlanDto> report
     )
     {
-        var plan = await planRepository.GetPlanByIdAsync(GetUserId(), id);
+        Guid? userId = CallerIsAuthenticated() ? GetUserId() : null;
+
+        var plan = await planRepository.GetPlanByIdAsync(userId, id);
         if (plan == null)
             return NotFound("Plano não encontrado");
 

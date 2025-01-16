@@ -16,6 +16,7 @@ public class PeriodController : MainController
 {
     private readonly List<int> _semestersAllowed = new() { 1, 2 };
 
+    [AllowAnonymous]
     [HttpGet]
     public IActionResult GetPeriods(
         [FromServices] IPeriodRepository periodRepository
@@ -32,6 +33,19 @@ public class PeriodController : MainController
             .ToList();
 
         return Ok(periods);
+    }
+
+    [AllowAnonymous]
+    [HttpGet("{id:guid}/ApprovedPlans")]
+    public async Task<IActionResult> GetApprovedPeriodPlans(
+        [FromServices] IPlanRepository planRepository,
+        [FromRoute] Guid id,
+        [FromQuery] int pageIndex = 0,
+        [FromQuery] int pageSize = 5
+    )
+    {
+        var periodPlans = await planRepository.GetPeriodPlansAsync(id, pageIndex, pageSize, null, EPlanSituation.APPROVED);
+        return Ok(periodPlans);
     }
 
     [HttpGet("{id:guid}/Plans")]

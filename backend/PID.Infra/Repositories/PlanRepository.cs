@@ -28,7 +28,7 @@ public class PlanRepository : RepositoryBase<Plan>, IPlanRepository
             .ToListAsync();
     }
 
-    public async Task<PlanDto?> GetPlanByIdAsync(Guid userId, Guid id)
+    public async Task<PlanDto?> GetPlanByIdAsync(Guid? userId, Guid id)
     {
         return await _pIDContext.Plans
             .AsNoTracking()
