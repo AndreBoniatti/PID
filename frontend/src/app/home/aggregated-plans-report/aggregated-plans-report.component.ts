@@ -25,6 +25,8 @@ export class AggregatedPlansReportComponent implements OnInit {
 
   workloadSchedule = WorkloadSchedule;
   workloadDays = WorkloadDays;
+
+  aggregatedPlans: IAggregatedPlans[] = [];
   slots: IAggregatedPlansSlot[][] = [];
 
   constructor(
@@ -46,7 +48,10 @@ export class AggregatedPlansReportComponent implements OnInit {
 
     this.periodsService
       .getAggregatedPeriodPlans(this.data.id, this.activityTypeId)
-      .subscribe((res) => this.setSlotsData(res));
+      .subscribe((res) => {
+        this.aggregatedPlans = res;
+        this.setSlotsData();
+      });
   }
 
   initializeSlots(): void {
@@ -61,10 +66,10 @@ export class AggregatedPlansReportComponent implements OnInit {
     );
   }
 
-  setSlotsData(data: IAggregatedPlans[]): void {
+  setSlotsData(): void {
     this.initializeSlots();
 
-    data.forEach((x) => {
+    this.aggregatedPlans.forEach((x) => {
       const [rowStr, colStr] = x.slot.split('/');
       const row = +rowStr;
       const col = +colStr;
@@ -75,8 +80,15 @@ export class AggregatedPlansReportComponent implements OnInit {
         col >= 0 &&
         col < this.workloadDays.length
       ) {
-        this.slots[row][col].activities = x.activities;
-        this.slots[row][col].color = getColorByIndex(col);
+        const activities = x.activities.filter(
+          (activity) =>
+            this.activityTypeId === '' ||
+            activity.activityTypeId === this.activityTypeId
+        );
+
+        this.slots[row][col].activities = activities;
+        this.slots[row][col].color =
+          activities.length > 0 ? getColorByIndex(col) : '';
       }
     });
   }

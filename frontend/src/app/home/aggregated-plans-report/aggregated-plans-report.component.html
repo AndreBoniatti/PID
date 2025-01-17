@@ -6,7 +6,7 @@
         <mat-label>Tipo</mat-label>
         <mat-select
           [(ngModel)]="activityTypeId"
-          (selectionChange)="getAggregatedPeriodPlans()"
+          (selectionChange)="setSlotsData()"
         >
           <mat-option value="">Todos</mat-option>
           @for (activityType of activityTypes; track activityType) {
@@ -43,7 +43,9 @@
             @for (activity of column.activities; track activity) {
             <div class="activity-info">
               <div class="activity-username">{{ activity.userName }}</div>
-              <div class="activity-description">{{ activity.activity }}</div>
+              <div class="activity-description">
+                {{ activity.activityDescription }}
+              </div>
             </div>
             }
           </td>

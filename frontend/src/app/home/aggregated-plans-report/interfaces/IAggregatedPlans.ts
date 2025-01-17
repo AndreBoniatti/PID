@@ -5,5 +5,6 @@ export interface IAggregatedPlans {
 
 export interface IAggregatedPlanActivities {
   userName: string;
-  activity: string;
+  activityDescription: string;
+  activityTypeId: string;
 }
