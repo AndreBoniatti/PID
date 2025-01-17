@@ -40,12 +40,18 @@
       width: 100px;
     }
 
-    .upper-time {
+    .upper-time,
+    .activity-username {
       font-weight: bold;
     }
 
-    .lower-time {
+    .lower-time,
+    .activity-description {
       font-style: italic;
+    }
+
+    .activity-info {
+      margin: 7px 0;
     }
   }
 }

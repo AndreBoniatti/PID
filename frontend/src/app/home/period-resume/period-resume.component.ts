@@ -72,7 +72,7 @@ export class PeriodResumeComponent implements OnInit {
     this.dialog.open(AggregatedPlansReportComponent, {
       data: this.period,
       maxWidth: '95vw',
-      width: '1100px',
+      width: '1250px',
     });
   }
 }

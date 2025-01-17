@@ -8,6 +8,7 @@ import { ICreatePeriod } from './components/create-period/interfaces/ICreatePeri
 import { IPagedList } from '../../../shared/interfaces/IPagedList';
 import { IPeriodPlan } from './components/period-plans/interfaces/IPeriodPlan';
 import { EPlanSituation } from '../../plans/enums/EPlanSituation';
+import { IAggregatedPlans } from '../../../home/aggregated-plans-report/interfaces/IAggregatedPlans';
 
 const BASE_URL = environment.api;
 
@@ -29,6 +30,17 @@ export class PeriodsService {
     return this.http.get<IPagedList<IPeriodPlan>>(
       `${BASE_URL}/Period/${id}/ApprovedPlans?pageIndex=${pageIndex}&pageSize=${pageSize}`
     );
+  }
+
+  getAggregatedPeriodPlans(
+    id: string,
+    activityTypeId?: string
+  ): Observable<IAggregatedPlans[]> {
+    let url = `${BASE_URL}/Period/${id}/AggregatedPlans`;
+
+    if (activityTypeId) url += `?activityTypeId=${activityTypeId}`;
+
+    return this.http.get<IAggregatedPlans[]>(url);
   }
 
   getPeriodPlans(
