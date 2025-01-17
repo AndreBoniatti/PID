@@ -10,4 +10,5 @@ public interface IPlanRepository : IRepositoryBase<Plan>
     Task<List<PlansDto>> GetUserPlansAsync(Guid userId);
     Task<PlanDto?> GetPlanByIdAsync(Guid? userId, Guid id);
     Task<PagedList<PeriodPlanDto>> GetPeriodPlansAsync(Guid periodId, int pageIndex, int pageSize, string? userName, EPlanSituation? planSituation);
+    Task<List<AggregatedPlansDto>> GetAggregatedPlansAsync(Guid periodId, Guid? activityTypeId);
 }

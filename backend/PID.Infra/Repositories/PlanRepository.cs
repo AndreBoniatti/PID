@@ -96,4 +96,59 @@ public class PlanRepository : RepositoryBase<Plan>, IPlanRepository
                 .ToListAsync()
         };
     }
+
+    public async Task<List<AggregatedPlansDto>> GetAggregatedPlansAsync(Guid periodId, Guid? activityTypeId)
+    {
+        var plans = await _pIDContext.Plans
+            .AsNoTracking()
+            .Where(x => x.PeriodId == periodId && x.Situation == EPlanSituation.APPROVED)
+            .Select(x => new
+            {
+                UserName = x.User == null ? string.Empty : x.User.Name,
+                Activities = x.Activities == null ? null : x.Activities
+                    .Where(y => activityTypeId != null ? y.ActivityTypeId == activityTypeId : true)
+                    .Select(y => new
+                    {
+                        y.Description,
+                        y.WorkloadAllocation
+                    })
+            })
+            .ToListAsync();
+
+        var aggregatedPlans = new List<AggregatedPlansDto>();
+
+        foreach (var plan in plans)
+        {
+            if (plan.Activities == null)
+                continue;
+
+            foreach (var activity in plan.Activities)
+            {
+                foreach (var workload in activity.WorkloadAllocation)
+                {
+                    var aggregatedPlanActivity = new AggregatedPlanActivitiesDto()
+                    {
+                        UserName = plan.UserName,
+                        Activity = activity.Description
+                    };
+
+                    var aggregatedPlan = aggregatedPlans.FirstOrDefault(x => x.Slot == workload);
+                    if (aggregatedPlan == null)
+                    {
+                        aggregatedPlans.Add(new AggregatedPlansDto
+                        {
+                            Slot = workload,
+                            Activities = new() { aggregatedPlanActivity }
+                        });
+                    }
+                    else
+                    {
+                        aggregatedPlan.Activities.Add(aggregatedPlanActivity);
+                    }
+                }
+            }
+        }
+
+        return aggregatedPlans;
+    }
 }

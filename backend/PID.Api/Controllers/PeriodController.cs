@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PID.Api.Extensions;
 using PID.Domain.Commands;
-using PID.Domain.Dtos;
 using PID.Domain.Entities;
 using PID.Domain.Enums;
 using PID.Domain.Repositories;
@@ -18,20 +17,11 @@ public class PeriodController : MainController
 
     [AllowAnonymous]
     [HttpGet]
-    public IActionResult GetPeriods(
+    public async Task<IActionResult> GetPeriods(
         [FromServices] IPeriodRepository periodRepository
     )
     {
-        var periods = periodRepository
-            .GetAll()
-            .Select(x => new PeriodDto
-            {
-                Id = x.Id,
-                Description = x.GetInfo()
-            })
-            .OrderByDescending(x => x.Description)
-            .ToList();
-
+        var periods = await periodRepository.GetAllPeriodsAsync();
         return Ok(periods);
     }
 
@@ -46,6 +36,18 @@ public class PeriodController : MainController
     {
         var periodPlans = await planRepository.GetPeriodPlansAsync(id, pageIndex, pageSize, null, EPlanSituation.APPROVED);
         return Ok(periodPlans);
+    }
+
+    [AllowAnonymous]
+    [HttpGet("{id:guid}/AggregatedPlans")]
+    public async Task<IActionResult> GetAggregatedPeriodPlans(
+        [FromServices] IPlanRepository planRepository,
+        [FromRoute] Guid id,
+        [FromQuery] Guid? activityTypeId
+    )
+    {
+        var aggregatedPlans = await planRepository.GetAggregatedPlansAsync(id, activityTypeId);
+        return Ok(aggregatedPlans);
     }
 
     [HttpGet("{id:guid}/Plans")]
