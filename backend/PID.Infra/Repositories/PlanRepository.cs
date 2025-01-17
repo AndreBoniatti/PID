@@ -110,7 +110,8 @@ public class PlanRepository : RepositoryBase<Plan>, IPlanRepository
                     .Select(y => new
                     {
                         y.Description,
-                        y.WorkloadAllocation
+                        y.WorkloadAllocation,
+                        y.ActivityTypeId
                     })
             })
             .ToListAsync();
@@ -129,7 +130,8 @@ public class PlanRepository : RepositoryBase<Plan>, IPlanRepository
                     var aggregatedPlanActivity = new AggregatedPlanActivitiesDto()
                     {
                         UserName = plan.UserName,
-                        Activity = activity.Description
+                        ActivityDescription = activity.Description,
+                        ActivityTypeId = activity.ActivityTypeId
                     };
 
                     var aggregatedPlan = aggregatedPlans.FirstOrDefault(x => x.Slot == workload);

@@ -9,6 +9,7 @@ public class AggregatedPlansDto
 public class AggregatedPlanActivitiesDto
 {
     public string UserName { get; set; } = string.Empty;
-    public string Activity { get; set; } = string.Empty;
+    public string ActivityDescription { get; set; } = string.Empty;
+    public Guid ActivityTypeId { get; set; }
 
 }
