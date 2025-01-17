@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PID.Api.Extensions;
-using PID.Domain.Dtos;
 using PID.Domain.Repositories;
 
 namespace PID.Api.Controllers;
@@ -11,19 +10,13 @@ namespace PID.Api.Controllers;
 [Route("api/[controller]")]
 public class ActivityTypeController : MainController
 {
+    [AllowAnonymous]
     [HttpGet]
-    public IActionResult GetAll(
+    public async Task<IActionResult> GetAll(
         [FromServices] IActivityTypeRepository activityTypeRepository
     )
     {
-        var activityTypes = activityTypeRepository.GetAll()
-            .Select(x => new ActivityTypeDto
-            {
-                Id = x.Id,
-                Description = x.Description
-            })
-            .ToList();
-
+        var activityTypes = await activityTypeRepository.GetAllTypesAsync();
         return Ok(activityTypes);
     }
 }
