@@ -8,6 +8,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatDialogModule } from '@angular/material/dialog';
+import { FormsModule } from '@angular/forms';
+import { MatSelectModule } from '@angular/material/select';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -17,6 +20,7 @@ import { HomeComponent } from './home/home.component';
 import { MainModule } from './main/main.module';
 import { MatPaginatorIntlPtBr } from './shared/helpers/TranslatePaginator';
 import { PeriodResumeComponent } from './home/period-resume/period-resume.component';
+import { AggregatedPlansReportComponent } from './home/aggregated-plans-report/aggregated-plans-report.component';
 
 @NgModule({
   declarations: [
@@ -24,6 +28,7 @@ import { PeriodResumeComponent } from './home/period-resume/period-resume.compon
     AuthComponent,
     HomeComponent,
     PeriodResumeComponent,
+    AggregatedPlansReportComponent,
   ],
   imports: [
     BrowserModule,
@@ -34,6 +39,9 @@ import { PeriodResumeComponent } from './home/period-resume/period-resume.compon
     MatIconModule,
     MatTableModule,
     MatPaginatorModule,
+    MatDialogModule,
+    FormsModule,
+    MatSelectModule,
   ],
   providers: [
     provideHttpClient(withInterceptors([authInterceptor])),

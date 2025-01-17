@@ -1,4 +1,4 @@
-import { IWorkloadSchedule } from '../interfaces/IWorkloadSchedule';
+import { IWorkloadSchedule } from '../../main/plans/components/workload-allocation/interfaces/IWorkloadSchedule';
 
 export const WorkloadSchedule: IWorkloadSchedule[] = [
   {

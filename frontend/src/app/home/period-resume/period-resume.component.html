@@ -5,7 +5,9 @@
     </mat-expansion-panel-header>
 
     <div class="actions-container">
-      <button mat-raised-button><mat-icon>summarize</mat-icon>Agregado</button>
+      <button mat-raised-button (click)="openAggregatedPlans()">
+        <mat-icon>summarize</mat-icon>Agregado
+      </button>
     </div>
 
     <div class="mat-elevation-z8">

@@ -8,6 +8,7 @@ import { IPagedList } from '../../shared/interfaces/IPagedList';
 import { IPeriodPlan } from '../../main/admin/periods/components/period-plans/interfaces/IPeriodPlan';
 import { PlanDialogComponent } from '../../main/plans/components/plan-dialog/plan-dialog.component';
 import { IPlanDialog } from '../../main/plans/components/plan-dialog/interfaces/IPlanDialog';
+import { AggregatedPlansReportComponent } from '../aggregated-plans-report/aggregated-plans-report.component';
 
 @Component({
   standalone: false,
@@ -62,6 +63,14 @@ export class PeriodResumeComponent implements OnInit {
         period: this.period?.description ?? '',
         periodPlan: periodPlan,
       } as IPlanDialog,
+      maxWidth: '95vw',
+      width: '1100px',
+    });
+  }
+
+  openAggregatedPlans(): void {
+    this.dialog.open(AggregatedPlansReportComponent, {
+      data: this.period,
       maxWidth: '95vw',
       width: '1100px',
     });

@@ -10,7 +10,8 @@ import {
 } from '../../../../shared/helpers/ColorHelper';
 import { SnackBarService } from '../../../../shared/services/snack-bar.service';
 import { WorkloadAllocationService } from './workload-allocation.service';
-import { WorkloadSchedule } from './constants/WorkloadSchedule';
+import { WorkloadSchedule } from '../../../../shared/constants/WorkloadSchedule';
+import { WorkloadDays } from '../../../../shared/constants/WorkloadDays';
 
 @Component({
   standalone: false,
@@ -22,8 +23,7 @@ import { WorkloadSchedule } from './constants/WorkloadSchedule';
 export class WorkloadAllocationComponent implements OnInit, OnDestroy {
   @Input() readonlyMode = false;
   workloadSchedule = WorkloadSchedule;
-  days = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab'];
-  times = Array.from({ length: 13 }, (_, i) => i + 1);
+  workloadDays = WorkloadDays;
   slots: IWorkloadSlot[][] = [];
   userWorkload = 0;
   currentActivityDescription?: string;
@@ -47,8 +47,8 @@ export class WorkloadAllocationComponent implements OnInit, OnDestroy {
   }
 
   initializeSlots(): void {
-    this.slots = this.times.map(() =>
-      this.days.map(
+    this.slots = this.workloadSchedule.map(() =>
+      this.workloadDays.map(
         () =>
           ({
             activity: '',
@@ -85,9 +85,9 @@ export class WorkloadAllocationComponent implements OnInit, OnDestroy {
 
       if (
         row >= 0 &&
-        row < this.times.length &&
+        row < this.workloadSchedule.length &&
         col >= 0 &&
-        col < this.days.length
+        col < this.workloadDays.length
       ) {
         this.slots[row][col].activity = planActivity.description;
         this.slots[row][col].selected = true;
