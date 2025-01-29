@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using PID.Api.Extensions;
 using PID.Domain.Commands;
 using PID.Domain.Entities;
+using PID.Domain.Enums;
 using PID.Domain.Repositories;
 
 namespace PID.Api.Controllers;
@@ -20,6 +21,10 @@ public class PlanActivityController : MainController
         [FromServices] IPlanActivityRepository planActivityRepository
     )
     {
+        var userType = GetUserType();
+        if (userType == EUserType.ADMIN)
+            return BadRequest("Administradores não podem criar planos");
+
         var userId = GetUserId();
         Plan plan;
 

@@ -64,37 +64,78 @@ public class PlanRepository : RepositoryBase<Plan>, IPlanRepository
             .FirstOrDefaultAsync();
     }
 
-    public async Task<PagedList<PeriodPlanDto>> GetPeriodPlansAsync(Guid periodId, int pageIndex, int pageSize, string? userName, EPlanSituation? planSituation)
+    public async Task<List<PeriodPlanDto>> GetPeriodPlansAsync(Guid periodId, EPlanSituation planSituation, string? userName)
     {
         var query = _pIDContext.Plans
             .AsNoTracking()
-            .Where(x => x.PeriodId == periodId)
-            .Select(x => new PeriodPlanDto
+            .Where(x => x.PeriodId == periodId && x.Situation == planSituation)
+            .Select(x => new
             {
                 UserName = x.User == null ? string.Empty : x.User.Name,
                 UserWorkload = x.User == null ? 0 : x.User.Workload,
-                PlanId = x.Id,
+                x.UserId,
+                PlanId = (Guid?)x.Id,
                 PlanSituation = x.Situation
             });
 
-        if (!string.IsNullOrWhiteSpace(userName))
+        if (planSituation != EPlanSituation.PENDING && !string.IsNullOrWhiteSpace(userName))
         {
             userName = userName.ToLower().Trim();
             query = query.Where(x => x.UserName.ToLower().Contains(userName));
         }
 
-        if (planSituation != null)
-            query = query.Where(x => x.PlanSituation == planSituation);
+        var periodPlans = await query.ToListAsync();
 
-        return new PagedList<PeriodPlanDto>
+        if (planSituation == EPlanSituation.PENDING)
         {
-            TotalCount = await query.CountAsync(),
-            Data = await query
-                .OrderBy(x => x.UserName)
-                .Skip(pageSize * pageIndex)
-                .Take(pageSize)
-                .ToListAsync()
-        };
+            var allPeriodPlanUsers = await _pIDContext.Plans
+                .AsNoTracking()
+                .Where(x => x.PeriodId == periodId)
+                .Select(x => x.UserId)
+                .ToListAsync();
+
+            var usersWithoutPlan = await _pIDContext.Users
+                .AsNoTracking()
+                .Where(x => x.Type != EUserType.ADMIN && !allPeriodPlanUsers.Contains(x.Id))
+                .Select(x => new
+                {
+                    x.Id,
+                    x.Name,
+                    x.Workload
+                })
+                .ToListAsync();
+
+            foreach (var user in usersWithoutPlan)
+            {
+                periodPlans.Add(new
+                {
+                    UserName = user.Name,
+                    UserWorkload = user.Workload,
+                    UserId = user.Id,
+                    PlanId = (Guid?)null,
+                    PlanSituation = EPlanSituation.PENDING
+                });
+            }
+
+            if (!string.IsNullOrWhiteSpace(userName))
+            {
+                userName = userName.ToLower().Trim();
+                periodPlans = periodPlans
+                    .Where(x => x.UserName.ToLower().Contains(userName))
+                    .ToList();
+            }
+        }
+
+        return periodPlans
+            .OrderBy(x => x.UserName)
+            .Select(x => new PeriodPlanDto
+            {
+                UserName = x.UserName,
+                UserWorkload = x.UserWorkload,
+                PlanId = x.PlanId,
+                PlanSituation = x.PlanSituation
+            })
+            .ToList();
     }
 
     public async Task<List<AggregatedPlansDto>> GetAggregatedPlansAsync(Guid periodId, Guid? activityTypeId)

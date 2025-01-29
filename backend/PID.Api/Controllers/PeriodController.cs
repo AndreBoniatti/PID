@@ -29,12 +29,10 @@ public class PeriodController : MainController
     [HttpGet("{id:guid}/ApprovedPlans")]
     public async Task<IActionResult> GetApprovedPeriodPlans(
         [FromServices] IPlanRepository planRepository,
-        [FromRoute] Guid id,
-        [FromQuery] int pageIndex = 0,
-        [FromQuery] int pageSize = 5
+        [FromRoute] Guid id
     )
     {
-        var periodPlans = await planRepository.GetPeriodPlansAsync(id, pageIndex, pageSize, null, EPlanSituation.APPROVED);
+        var periodPlans = await planRepository.GetPeriodPlansAsync(id, EPlanSituation.APPROVED, null);
         return Ok(periodPlans);
     }
 
@@ -54,13 +52,11 @@ public class PeriodController : MainController
     public async Task<IActionResult> GetPeriodPlans(
         [FromServices] IPlanRepository planRepository,
         [FromRoute] Guid id,
-        [FromQuery] string? userName,
-        [FromQuery] EPlanSituation? planSituation,
-        [FromQuery] int pageIndex = 0,
-        [FromQuery] int pageSize = 5
+        [FromQuery] EPlanSituation planSituation = EPlanSituation.SENT,
+        [FromQuery] string? userName = null
     )
     {
-        var periodPlans = await planRepository.GetPeriodPlansAsync(id, pageIndex, pageSize, userName, planSituation);
+        var periodPlans = await planRepository.GetPeriodPlansAsync(id, planSituation, userName);
         return Ok(periodPlans);
     }
 
