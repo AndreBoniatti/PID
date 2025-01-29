@@ -1,9 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
-import {
-  MAT_DIALOG_DATA,
-  MatDialog,
-  MatDialogRef,
-} from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { IPeriod } from '../../interfaces/IPeriod';
 import {
@@ -25,7 +22,8 @@ import { IPlanDialog } from '../../../../plans/components/plan-dialog/interfaces
 })
 export class PeriodPlansComponent implements OnInit {
   readonly dialog = inject(MatDialog);
-  data?: IPeriod = inject(MAT_DIALOG_DATA);
+
+  period?: IPeriod;
 
   periodPlans: IPeriodPlan[] = [];
   displayedColumns: string[] = [
@@ -41,21 +39,40 @@ export class PeriodPlansComponent implements OnInit {
   planSituationFilter = EPlanSituation.SENT;
 
   constructor(
-    private dialogRef: MatDialogRef<PeriodPlansComponent>,
+    private router: Router,
+    private route: ActivatedRoute,
     private periodsService: PeriodsService,
     private snackBarService: SnackBarService
   ) {}
 
   ngOnInit(): void {
-    this.getPeriodPlans();
+    const periodId = this.route.snapshot.paramMap.get('id');
+
+    if (periodId) {
+      this.periodsService.getById(periodId).subscribe({
+        next: (period) => {
+          this.period = period;
+          this.getPeriodPlans();
+        },
+        error: () => {
+          this.snackBarService.openSnackBar(
+            'Erro ao obter informações do período'
+          );
+          this.router.navigateByUrl('main/admin/periods');
+        },
+      });
+    } else {
+      this.snackBarService.openSnackBar('Período não especificado');
+      this.router.navigateByUrl('main/admin/periods');
+    }
   }
 
   getPeriodPlans(): void {
-    if (!this.data) return;
+    if (!this.period) return;
 
     this.periodsService
       .getPeriodPlans(
-        this.data.id,
+        this.period.id,
         this.planSituationFilter,
         this.userNameFilter
       )
@@ -86,7 +103,7 @@ export class PeriodPlansComponent implements OnInit {
 
     const dialogRef = this.dialog.open(PlanDialogComponent, {
       data: {
-        period: this.data?.description ?? '',
+        period: this.period?.description ?? '',
         periodPlan: periodPlan,
       } as IPlanDialog,
       maxWidth: '95vw',
@@ -96,9 +113,5 @@ export class PeriodPlansComponent implements OnInit {
     dialogRef.afterClosed().subscribe((situationWasChanged) => {
       if (situationWasChanged) this.getPeriodPlans();
     });
-  }
-
-  close(): void {
-    this.dialogRef.close();
   }
 }

@@ -21,6 +21,10 @@ export class PeriodsService {
     return this.http.get<IPeriod[]>(`${BASE_URL}/Period`);
   }
 
+  getById(id: string): Observable<IPeriod> {
+    return this.http.get<IPeriod>(`${BASE_URL}/Period/${id}`);
+  }
+
   getApprovedPeriodPlans(id: string): Observable<IPeriodPlan[]> {
     return this.http.get<IPeriodPlan[]>(
       `${BASE_URL}/Period/${id}/ApprovedPlans`

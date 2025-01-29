@@ -1,5 +1,6 @@
-<h2 mat-dialog-title>Planos do Período {{ data?.description }}</h2>
-<mat-dialog-content class="mat-typography">
+<div class="m-3">
+  <h2 class="title">Planos do Período {{ period?.description }}</h2>
+
   <div class="row">
     <div class="col-md-8">
       <mat-form-field class="mat-form-field">
@@ -74,7 +75,4 @@
       </tr>
     </table>
   </div>
-</mat-dialog-content>
-<mat-dialog-actions align="end">
-  <button mat-button cdkFocusInitial (click)="close()">Fechar</button>
-</mat-dialog-actions>
+</div>

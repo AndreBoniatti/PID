@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { AdminComponent } from './admin.component';
 import { PeriodsComponent } from './periods/periods.component';
+import { PeriodPlansComponent } from './periods/components/period-plans/period-plans.component';
 
 const routes: Routes = [
   {
@@ -17,6 +18,10 @@ const routes: Routes = [
       {
         path: 'periods',
         component: PeriodsComponent,
+      },
+      {
+        path: 'period/:id',
+        component: PeriodPlansComponent,
       },
     ],
   },

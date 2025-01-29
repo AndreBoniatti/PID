@@ -1,12 +1,12 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 
 import { ConfirmDialogService } from '../../confirm-dialog/confirm-dialog.service';
 import { PeriodsService } from './periods.service';
 import { IPeriod } from './interfaces/IPeriod';
 import { CreatePeriodComponent } from './components/create-period/create-period.component';
 import { SnackBarService } from '../../../shared/services/snack-bar.service';
-import { PeriodPlansComponent } from './components/period-plans/period-plans.component';
 
 @Component({
   standalone: false,
@@ -21,6 +21,7 @@ export class PeriodsComponent implements OnInit {
   periods: IPeriod[] = [];
 
   constructor(
+    private router: Router,
     private periodsService: PeriodsService,
     private confirmDialogService: ConfirmDialogService,
     private snackBarService: SnackBarService
@@ -45,12 +46,8 @@ export class PeriodsComponent implements OnInit {
     });
   }
 
-  openPeriodPlans(period: IPeriod): void {
-    this.dialog.open(PeriodPlansComponent, {
-      data: period,
-      maxWidth: '95vw',
-      width: '800px',
-    });
+  viewPeriodPlans(period: IPeriod): void {
+    this.router.navigateByUrl(`main/admin/period/${period.id}`);
   }
 
   deletePeriod(period: IPeriod): void {
