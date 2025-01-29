@@ -1,10 +1,9 @@
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import {
   MAT_DIALOG_DATA,
   MatDialog,
   MatDialogRef,
 } from '@angular/material/dialog';
-import { MatPaginator, PageEvent } from '@angular/material/paginator';
 
 import { IPeriod } from '../../interfaces/IPeriod';
 import {
@@ -14,7 +13,6 @@ import {
 import { PeriodsService } from '../../periods.service';
 import { SnackBarService } from '../../../../../shared/services/snack-bar.service';
 import { Debounce } from '../../../../../shared/helpers/Debounce';
-import { IPagedList } from '../../../../../shared/interfaces/IPagedList';
 import { IPeriodPlan } from './interfaces/IPeriodPlan';
 import { PlanDialogComponent } from '../../../../plans/components/plan-dialog/plan-dialog.component';
 import { IPlanDialog } from '../../../../plans/components/plan-dialog/interfaces/IPlanDialog';
@@ -29,20 +27,13 @@ export class PeriodPlansComponent implements OnInit {
   readonly dialog = inject(MatDialog);
   data?: IPeriod = inject(MAT_DIALOG_DATA);
 
+  periodPlans: IPeriodPlan[] = [];
   displayedColumns: string[] = [
     'userName',
     'userWorkload',
     'planSituation',
     'actions',
   ];
-  periodPlans: IPagedList<IPeriodPlan> = {
-    data: [],
-    totalCount: 0,
-  };
-
-  @ViewChild(MatPaginator) paginator?: MatPaginator;
-  pageIndex = 0;
-  pageSize = 5;
 
   planSituation = EPlanSituation;
 
@@ -59,16 +50,14 @@ export class PeriodPlansComponent implements OnInit {
     this.getPeriodPlans();
   }
 
-  getPeriodPlans(pageIndex?: number, pageSize?: number): void {
+  getPeriodPlans(): void {
     if (!this.data) return;
 
     this.periodsService
       .getPeriodPlans(
         this.data.id,
-        pageIndex,
-        pageSize,
-        this.userNameFilter,
-        this.planSituationFilter
+        this.planSituationFilter,
+        this.userNameFilter
       )
       .subscribe({
         next: (res) => {
@@ -80,20 +69,9 @@ export class PeriodPlansComponent implements OnInit {
       });
   }
 
-  applyPagination(event: PageEvent): void {
-    this.pageIndex = event.pageIndex;
-    this.pageSize = event.pageSize;
-    this.getPeriodPlans(event.pageIndex, event.pageSize);
-  }
-
-  refreshPeriodPlans(): void {
-    this.getPeriodPlans(this.pageIndex, this.pageSize);
-  }
-
   @Debounce(500)
   applyFilter(): void {
-    this.getPeriodPlans(0, this.pageSize);
-    if (this.paginator) this.paginator.firstPage();
+    this.getPeriodPlans();
   }
 
   getSituation(situation: number): string {
@@ -101,6 +79,11 @@ export class PeriodPlansComponent implements OnInit {
   }
 
   openPlan(periodPlan: IPeriodPlan): void {
+    if (!periodPlan.planId) {
+      this.snackBarService.openSnackBar('Plano não iniciado');
+      return;
+    }
+
     const dialogRef = this.dialog.open(PlanDialogComponent, {
       data: {
         period: this.data?.description ?? '',
@@ -111,7 +94,7 @@ export class PeriodPlansComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((situationWasChanged) => {
-      if (situationWasChanged) this.refreshPeriodPlans();
+      if (situationWasChanged) this.getPeriodPlans();
     });
   }
 

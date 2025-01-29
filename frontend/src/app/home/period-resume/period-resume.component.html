@@ -11,7 +11,7 @@
     </div>
 
     <div class="mat-elevation-z8">
-      <table mat-table class="mat-table" [dataSource]="periodPlans.data">
+      <table mat-table class="mat-table" [dataSource]="periodPlans">
         <ng-container matColumnDef="userName">
           <th mat-header-cell class="mat-header-cell" *matHeaderCellDef>
             Docente
@@ -47,14 +47,6 @@
           <td class="mat-cell" colspan="4">Nenhum registro encontrado</td>
         </tr>
       </table>
-
-      <mat-paginator
-        [length]="periodPlans.totalCount"
-        [pageSizeOptions]="[5, 10, 25]"
-        [pageSize]="5"
-        [showFirstLastButtons]="true"
-        (page)="applyPagination($event)"
-      ></mat-paginator>
     </div>
   </mat-expansion-panel>
 </mat-accordion>

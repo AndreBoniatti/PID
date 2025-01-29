@@ -5,7 +5,6 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { IPeriod } from './interfaces/IPeriod';
 import { ICreatePeriod } from './components/create-period/interfaces/ICreatePeriod';
-import { IPagedList } from '../../../shared/interfaces/IPagedList';
 import { IPeriodPlan } from './components/period-plans/interfaces/IPeriodPlan';
 import { EPlanSituation } from '../../plans/enums/EPlanSituation';
 import { IAggregatedPlans } from '../../../home/aggregated-plans-report/interfaces/IAggregatedPlans';
@@ -22,13 +21,9 @@ export class PeriodsService {
     return this.http.get<IPeriod[]>(`${BASE_URL}/Period`);
   }
 
-  getApprovedPeriodPlans(
-    id: string,
-    pageIndex = 0,
-    pageSize = 5
-  ): Observable<IPagedList<IPeriodPlan>> {
-    return this.http.get<IPagedList<IPeriodPlan>>(
-      `${BASE_URL}/Period/${id}/ApprovedPlans?pageIndex=${pageIndex}&pageSize=${pageSize}`
+  getApprovedPeriodPlans(id: string): Observable<IPeriodPlan[]> {
+    return this.http.get<IPeriodPlan[]>(
+      `${BASE_URL}/Period/${id}/ApprovedPlans`
     );
   }
 
@@ -45,18 +40,14 @@ export class PeriodsService {
 
   getPeriodPlans(
     id: string,
-    pageIndex = 0,
-    pageSize = 5,
-    userName?: string,
-    planSituation?: EPlanSituation
-  ): Observable<IPagedList<IPeriodPlan>> {
-    let url = `${BASE_URL}/Period/${id}/Plans?pageIndex=${pageIndex}&pageSize=${pageSize}`;
+    planSituation: EPlanSituation,
+    userName?: string
+  ): Observable<IPeriodPlan[]> {
+    let url = `${BASE_URL}/Period/${id}/Plans?planSituation=${planSituation}`;
 
     if (userName) url += `&userName=${userName}`;
-    if (planSituation || planSituation === 0)
-      url += `&planSituation=${planSituation}`;
 
-    return this.http.get<IPagedList<IPeriodPlan>>(url);
+    return this.http.get<IPeriodPlan[]>(url);
   }
 
   createPeriod(data: ICreatePeriod): Observable<any> {

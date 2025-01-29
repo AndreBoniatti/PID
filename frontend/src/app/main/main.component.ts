@@ -26,10 +26,6 @@ export class MainComponent implements OnInit {
   }
 
   navigateToHome(): void {
-    this.router.navigateByUrl('main');
-  }
-
-  navigateToAdminArea(): void {
-    this.router.navigateByUrl('main/admin');
+    this.router.navigateByUrl(this.userIsAdmin ? 'main/admin' : 'main');
   }
 }

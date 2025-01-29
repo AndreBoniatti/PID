@@ -24,7 +24,9 @@ export class AuthComponent implements OnInit {
 
     this.authService.authenticateWithGoogle(idToken).subscribe((res) => {
       this.authService.setToken(res.token);
-      this.router.navigateByUrl('/main');
+      this.router.navigateByUrl(
+        this.authService.userIsAdmin(null) ? 'main/admin' : 'main'
+      );
     });
   }
 }

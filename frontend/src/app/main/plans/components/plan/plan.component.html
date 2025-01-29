@@ -2,13 +2,12 @@
   <div
     class="rejection-warning"
     *ngIf="
-      isOwnerUser() &&
-      !isDialogMode() &&
-      planIsPending() &&
+      ((isOwnerUser() && !isDialogMode() && planIsPending()) ||
+        (authenticatedUserIsAdmin && isDialogMode() && !planIsApproved())) &&
       plan?.reasonForRejection
     "
   >
-    <h2>Seu plano foi rejeitado</h2>
+    <h2>Observação</h2>
     <p>{{ plan?.reasonForRejection }}</p>
   </div>
 

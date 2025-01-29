@@ -1,10 +1,8 @@
-import { Component, inject, Input, OnInit, ViewChild } from '@angular/core';
-import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { Component, inject, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 
 import { IPeriod } from '../../main/admin/periods/interfaces/IPeriod';
 import { PeriodsService } from '../../main/admin/periods/periods.service';
-import { IPagedList } from '../../shared/interfaces/IPagedList';
 import { IPeriodPlan } from '../../main/admin/periods/components/period-plans/interfaces/IPeriodPlan';
 import { PlanDialogComponent } from '../../main/plans/components/plan-dialog/plan-dialog.component';
 import { IPlanDialog } from '../../main/plans/components/plan-dialog/interfaces/IPlanDialog';
@@ -25,13 +23,8 @@ export class PeriodResumeComponent implements OnInit {
 
   dataHasAlreadyBeenLoaded = false;
 
-  periodPlans: IPagedList<IPeriodPlan> = {
-    data: [],
-    totalCount: 0,
-  };
-
+  periodPlans: IPeriodPlan[] = [];
   displayedColumns: string[] = ['userName', 'actions'];
-  @ViewChild(MatPaginator) paginator?: MatPaginator;
 
   constructor(private periodsService: PeriodsService) {}
 
@@ -45,19 +38,17 @@ export class PeriodResumeComponent implements OnInit {
     this.getPeriodPlans();
   }
 
-  getPeriodPlans(pageIndex?: number, pageSize?: number): void {
+  getPeriodPlans(): void {
     if (!this.period) return;
 
     this.periodsService
-      .getApprovedPeriodPlans(this.period.id, pageIndex, pageSize)
+      .getApprovedPeriodPlans(this.period.id)
       .subscribe((res) => (this.periodPlans = res));
   }
 
-  applyPagination(event: PageEvent): void {
-    this.getPeriodPlans(event.pageIndex, event.pageSize);
-  }
-
   openPlan(periodPlan: IPeriodPlan): void {
+    if (!periodPlan.planId) return;
+
     this.dialog.open(PlanDialogComponent, {
       data: {
         period: this.period?.description ?? '',

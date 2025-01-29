@@ -3,6 +3,6 @@ import { EPlanSituation } from '../../../../../plans/enums/EPlanSituation';
 export interface IPeriodPlan {
   userName: string;
   userWorkload: number;
-  planId: string;
+  planId?: string;
   planSituation: EPlanSituation;
 }
