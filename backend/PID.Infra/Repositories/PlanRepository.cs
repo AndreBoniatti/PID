@@ -69,12 +69,11 @@ public class PlanRepository : RepositoryBase<Plan>, IPlanRepository
         var query = _pIDContext.Plans
             .AsNoTracking()
             .Where(x => x.PeriodId == periodId && x.Situation == planSituation)
-            .Select(x => new
+            .Select(x => new PeriodPlanDto
             {
                 UserName = x.User == null ? string.Empty : x.User.Name,
                 UserWorkload = x.User == null ? 0 : x.User.Workload,
-                x.UserId,
-                PlanId = (Guid?)x.Id,
+                PlanId = x.Id,
                 PlanSituation = x.Situation
             });
 
@@ -99,7 +98,6 @@ public class PlanRepository : RepositoryBase<Plan>, IPlanRepository
                 .Where(x => x.Type != EUserType.ADMIN && !allPeriodPlanUsers.Contains(x.Id))
                 .Select(x => new
                 {
-                    x.Id,
                     x.Name,
                     x.Workload
                 })
@@ -107,12 +105,11 @@ public class PlanRepository : RepositoryBase<Plan>, IPlanRepository
 
             foreach (var user in usersWithoutPlan)
             {
-                periodPlans.Add(new
+                periodPlans.Add(new PeriodPlanDto
                 {
                     UserName = user.Name,
                     UserWorkload = user.Workload,
-                    UserId = user.Id,
-                    PlanId = (Guid?)null,
+                    PlanId = null,
                     PlanSituation = EPlanSituation.PENDING
                 });
             }
@@ -128,13 +125,6 @@ public class PlanRepository : RepositoryBase<Plan>, IPlanRepository
 
         return periodPlans
             .OrderBy(x => x.UserName)
-            .Select(x => new PeriodPlanDto
-            {
-                UserName = x.UserName,
-                UserWorkload = x.UserWorkload,
-                PlanId = x.PlanId,
-                PlanSituation = x.PlanSituation
-            })
             .ToList();
     }
 

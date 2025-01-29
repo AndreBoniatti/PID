@@ -7,5 +7,6 @@ namespace PID.Domain.Repositories;
 public interface IPeriodRepository : IRepositoryBase<Period>
 {
     Task<Period?> GetLastPeriodAsync();
+    Task<PeriodDto?> GetPeriodByIdAsync(Guid id);
     Task<List<PeriodDto>> GetAllPeriodsAsync();
 }

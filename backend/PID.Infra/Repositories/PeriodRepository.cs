@@ -22,6 +22,18 @@ public class PeriodRepository : RepositoryBase<Period>, IPeriodRepository
             .FirstOrDefaultAsync();
     }
 
+    public async Task<PeriodDto?> GetPeriodByIdAsync(Guid id)
+    {
+        return await _pIDContext.Periods
+            .AsNoTracking()
+            .Select(x => new PeriodDto
+            {
+                Id = x.Id,
+                Description = $"{x.Year} / {x.Semester}"
+            })
+            .FirstOrDefaultAsync(x => x.Id == id);
+    }
+
     public async Task<List<PeriodDto>> GetAllPeriodsAsync()
     {
         return await _pIDContext.Periods
