@@ -36,12 +36,12 @@
             <div class="upper-time">{{ workloadSchedule[i].period }}</div>
             <div class="lower-time">{{ workloadSchedule[i].hours }}</div>
           </td>
-          <td
-            *ngFor="let column of row; let j = index"
-            [style.background-color]="column.color"
-          >
+          <td *ngFor="let column of row; let j = index">
             @for (activity of column.activities; track activity) {
-            <div class="activity-info">
+            <div
+              class="activity-info"
+              [style.color]="getActivityTypeColor(activity.activityTypeId)"
+            >
               <div class="activity-username">{{ activity.userName }}</div>
               <div class="activity-description">
                 {{ activity.activityDescription }}

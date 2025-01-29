@@ -20,6 +20,7 @@ import { getColorByIndex } from '../../shared/helpers/ColorHelper';
 export class AggregatedPlansReportComponent implements OnInit {
   data?: IPeriod = inject(MAT_DIALOG_DATA);
 
+  activityTypeColors: { activityTypeId: string; color: string }[] = [];
   activityTypes: IActivityType[] = [];
   activityTypeId = '';
 
@@ -38,6 +39,13 @@ export class AggregatedPlansReportComponent implements OnInit {
   ngOnInit(): void {
     this.plansService.getActivityTypes().subscribe((res) => {
       this.activityTypes = res;
+
+      res.forEach((x, index) => {
+        this.activityTypeColors.push({
+          activityTypeId: x.id,
+          color: getColorByIndex(index),
+        });
+      });
     });
 
     this.getAggregatedPeriodPlans();
@@ -87,10 +95,15 @@ export class AggregatedPlansReportComponent implements OnInit {
         );
 
         this.slots[row][col].activities = activities;
-        this.slots[row][col].color =
-          activities.length > 0 ? getColorByIndex(col) : '';
       }
     });
+  }
+
+  getActivityTypeColor(activityTypeId: string): string {
+    return (
+      this.activityTypeColors.find((x) => x.activityTypeId === activityTypeId)
+        ?.color ?? ''
+    );
   }
 
   close(): void {
