@@ -26,6 +26,20 @@ public class PeriodController : MainController
     }
 
     [AllowAnonymous]
+    [HttpGet("{id:guid}")]
+    public async Task<IActionResult> GetPeriodById(
+        [FromRoute] Guid id,
+        [FromServices] IPeriodRepository periodRepository
+    )
+    {
+        var period = await periodRepository.GetPeriodByIdAsync(id);
+        if (period == null)
+            return NotFound("Período não encontrada");
+
+        return Ok(period);
+    }
+
+    [AllowAnonymous]
     [HttpGet("{id:guid}/ApprovedPlans")]
     public async Task<IActionResult> GetApprovedPeriodPlans(
         [FromServices] IPlanRepository planRepository,
@@ -46,19 +60,6 @@ public class PeriodController : MainController
     {
         var aggregatedPlans = await planRepository.GetAggregatedPlansAsync(id, activityTypeId);
         return Ok(aggregatedPlans);
-    }
-
-    [HttpGet("{id:guid}")]
-    public async Task<IActionResult> GetPeriodById(
-        [FromRoute] Guid id,
-        [FromServices] IPeriodRepository periodRepository
-    )
-    {
-        var period = await periodRepository.GetPeriodByIdAsync(id);
-        if (period == null)
-            return NotFound("Período não encontrada");
-
-        return Ok(period);
     }
 
     [HttpGet("{id:guid}/Plans")]
