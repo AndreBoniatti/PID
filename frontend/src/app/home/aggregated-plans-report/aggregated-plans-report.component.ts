@@ -1,5 +1,5 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { IActivityType } from '../../main/plans/components/plan-activity/interfaces/IActivityType';
 import { PlansService } from '../../main/plans/plans.service';
@@ -10,6 +10,7 @@ import { IPeriod } from '../../main/admin/periods/interfaces/IPeriod';
 import { IAggregatedPlansSlot } from './interfaces/IAggregatedPlansSlot';
 import { IAggregatedPlans } from './interfaces/IAggregatedPlans';
 import { getColorByIndex } from '../../shared/helpers/ColorHelper';
+import { SnackBarService } from '../../shared/services/snack-bar.service';
 
 @Component({
   standalone: false,
@@ -18,7 +19,7 @@ import { getColorByIndex } from '../../shared/helpers/ColorHelper';
   styleUrl: './aggregated-plans-report.component.css',
 })
 export class AggregatedPlansReportComponent implements OnInit {
-  data?: IPeriod = inject(MAT_DIALOG_DATA);
+  period?: IPeriod;
 
   activityTypeColors: { activityTypeId: string; color: string }[] = [];
   activityTypes: IActivityType[] = [];
@@ -31,12 +32,34 @@ export class AggregatedPlansReportComponent implements OnInit {
   slots: IAggregatedPlansSlot[][] = [];
 
   constructor(
-    private dialogRef: MatDialogRef<AggregatedPlansReportComponent>,
+    private router: Router,
+    private route: ActivatedRoute,
     private plansService: PlansService,
-    private periodsService: PeriodsService
+    private periodsService: PeriodsService,
+    private snackBarService: SnackBarService
   ) {}
 
   ngOnInit(): void {
+    const periodId = this.route.snapshot.paramMap.get('id');
+
+    if (periodId) {
+      this.periodsService.getById(periodId).subscribe({
+        next: (period) => {
+          this.period = period;
+          this.getAggregatedPeriodPlans();
+        },
+        error: () => {
+          this.snackBarService.openSnackBar(
+            'Erro ao obter informações do período'
+          );
+          this.redirectToHome();
+        },
+      });
+    } else {
+      this.snackBarService.openSnackBar('Período não especificado');
+      this.redirectToHome();
+    }
+
     this.plansService.getActivityTypes().subscribe((res) => {
       this.activityTypes = res;
 
@@ -47,15 +70,13 @@ export class AggregatedPlansReportComponent implements OnInit {
         });
       });
     });
-
-    this.getAggregatedPeriodPlans();
   }
 
   getAggregatedPeriodPlans(): void {
-    if (!this.data) return;
+    if (!this.period) return;
 
     this.periodsService
-      .getAggregatedPeriodPlans(this.data.id, this.activityTypeId)
+      .getAggregatedPeriodPlans(this.period.id, this.activityTypeId)
       .subscribe((res) => {
         this.aggregatedPlans = res;
         this.setSlotsData();
@@ -106,7 +127,7 @@ export class AggregatedPlansReportComponent implements OnInit {
     );
   }
 
-  close(): void {
-    this.dialogRef.close();
+  redirectToHome(): void {
+    this.router.navigateByUrl('');
   }
 }

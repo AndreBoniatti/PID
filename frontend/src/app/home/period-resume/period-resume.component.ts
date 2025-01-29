@@ -1,12 +1,12 @@
 import { Component, inject, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 
 import { IPeriod } from '../../main/admin/periods/interfaces/IPeriod';
 import { PeriodsService } from '../../main/admin/periods/periods.service';
 import { IPeriodPlan } from '../../main/admin/periods/components/period-plans/interfaces/IPeriodPlan';
 import { PlanDialogComponent } from '../../main/plans/components/plan-dialog/plan-dialog.component';
 import { IPlanDialog } from '../../main/plans/components/plan-dialog/interfaces/IPlanDialog';
-import { AggregatedPlansReportComponent } from '../aggregated-plans-report/aggregated-plans-report.component';
 
 @Component({
   standalone: false,
@@ -26,7 +26,7 @@ export class PeriodResumeComponent implements OnInit {
   periodPlans: IPeriodPlan[] = [];
   displayedColumns: string[] = ['userName', 'actions'];
 
-  constructor(private periodsService: PeriodsService) {}
+  constructor(private router: Router, private periodsService: PeriodsService) {}
 
   ngOnInit(): void {
     if (this.expandedByDefault) this.loadData();
@@ -60,10 +60,7 @@ export class PeriodResumeComponent implements OnInit {
   }
 
   openAggregatedPlans(): void {
-    this.dialog.open(AggregatedPlansReportComponent, {
-      data: this.period,
-      maxWidth: '95vw',
-      width: '1250px',
-    });
+    if (!this.period) return;
+    this.router.navigateByUrl(`period/${this.period.id}`);
   }
 }
