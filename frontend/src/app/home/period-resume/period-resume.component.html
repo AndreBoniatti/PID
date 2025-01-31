@@ -7,7 +7,7 @@
     <div *ngIf="periodPlans.length > 0">
       <div class="actions-container">
         <button mat-raised-button (click)="openAggregatedPlans()">
-          <mat-icon>summarize</mat-icon>Agregado
+          <mat-icon>summarize</mat-icon>Relatório Agregado
         </button>
       </div>
 
@@ -27,8 +27,8 @@
               Ações
             </th>
             <td mat-cell class="mat-cell" *matCellDef="let row">
-              <button mat-icon-button (click)="openPlan(row)">
-                <mat-icon>visibility</mat-icon>
+              <button mat-button (click)="openPlan(row)">
+                <mat-icon>visibility</mat-icon>Visualizar
               </button>
             </td>
           </ng-container>

@@ -19,8 +19,19 @@
     <ng-container matColumnDef="actions">
       <th mat-header-cell class="mat-header-cell" *matHeaderCellDef>Ações</th>
       <td mat-cell class="mat-cell" *matCellDef="let row">
-        <button mat-icon-button (click)="updatePlan(row.id)">
-          <mat-icon>{{ planIsApproved(row) ? "visibility" : "edit" }}</mat-icon>
+        <button
+          mat-button
+          *ngIf="planIsApproved(row)"
+          (click)="updatePlan(row.id)"
+        >
+          <mat-icon>visibility</mat-icon>Visualizar
+        </button>
+        <button
+          mat-button
+          *ngIf="!planIsApproved(row)"
+          (click)="updatePlan(row.id)"
+        >
+          <mat-icon>edit</mat-icon>Editar
         </button>
       </td>
     </ng-container>

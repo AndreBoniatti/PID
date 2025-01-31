@@ -7,14 +7,14 @@
     thead th {
       position: sticky;
       top: 0;
-      background-color: #fff;
-      color: #000;
+      background-color: #333;
+      color: #fff;
       z-index: 10;
     }
 
     th,
     td {
-      border: 1px solid #ccc;
+      border: 1px solid #333;
       text-align: center;
       padding: 4px;
       cursor: pointer;
@@ -23,13 +23,12 @@
 
     .period-separator {
       td {
-        border-bottom: 3px solid #fff;
+        border-bottom: 3px solid #333;
       }
     }
 
     .time-column {
       width: 100px;
-      color: white;
     }
 
     .time-header {

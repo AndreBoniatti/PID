@@ -19,8 +19,11 @@
   </div>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-  <button mat-button cdkFocusInitial (click)="close()">Fechar</button>
+  <button mat-button cdkFocusInitial (click)="close()">
+    <mat-icon>close</mat-icon>Fechar
+  </button>
   <button mat-button [disabled]="periodIsInvalid()" (click)="savePeriod()">
+    <mat-icon>save</mat-icon>
     Salvar
   </button>
 </mat-dialog-actions>

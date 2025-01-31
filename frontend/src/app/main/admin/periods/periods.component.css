@@ -3,3 +3,7 @@
   justify-content: end;
   align-items: center;
 }
+
+.actions-header {
+  width: 400px;
+}

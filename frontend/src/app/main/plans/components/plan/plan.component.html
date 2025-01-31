@@ -69,81 +69,77 @@
   </div>
 
   <div class="mat-elevation-z8 mt-3">
-    <div class="activities-table">
-      <table mat-table class="mat-table" [dataSource]="dataSource">
-        <ng-container matColumnDef="description">
-          <th mat-header-cell class="mat-header-cell" *matHeaderCellDef>
-            Atividade
-          </th>
-          <td mat-cell class="mat-cell" *matCellDef="let row">
-            {{ row.description }}
-          </td>
-        </ng-container>
+    <table mat-table class="mat-table" [dataSource]="dataSource">
+      <ng-container matColumnDef="description">
+        <th mat-header-cell class="mat-header-cell" *matHeaderCellDef>
+          Atividade
+        </th>
+        <td mat-cell class="mat-cell" *matCellDef="let row">
+          {{ row.description }}
+        </td>
+      </ng-container>
 
-        <ng-container matColumnDef="activityType">
-          <th mat-header-cell class="mat-header-cell" *matHeaderCellDef>
-            Tipo
-          </th>
-          <td mat-cell class="mat-cell" *matCellDef="let row">
-            {{ row.activityType?.description }}
-          </td>
-        </ng-container>
+      <ng-container matColumnDef="activityType">
+        <th mat-header-cell class="mat-header-cell" *matHeaderCellDef>Tipo</th>
+        <td mat-cell class="mat-cell" *matCellDef="let row">
+          {{ row.activityType?.description }}
+        </td>
+      </ng-container>
 
-        <ng-container matColumnDef="workload">
-          <th mat-header-cell class="mat-header-cell" *matHeaderCellDef>CH</th>
-          <td mat-cell class="mat-cell" *matCellDef="let row">
-            {{ row.workload }}
-          </td>
-        </ng-container>
+      <ng-container matColumnDef="workload">
+        <th mat-header-cell class="mat-header-cell" *matHeaderCellDef>CH</th>
+        <td mat-cell class="mat-cell" *matCellDef="let row">
+          {{ row.workload }}
+        </td>
+      </ng-container>
 
-        <ng-container matColumnDef="actions">
-          <th
-            mat-header-cell
-            class="mat-header-cell"
-            *matHeaderCellDef
-            [hidden]="plan && !isOwnerUser()"
+      <ng-container matColumnDef="actions">
+        <th
+          mat-header-cell
+          class="mat-header-cell actions-header"
+          *matHeaderCellDef
+          [hidden]="plan && !isOwnerUser()"
+        >
+          Ações
+        </th>
+        <td
+          mat-cell
+          class="mat-cell"
+          *matCellDef="let row"
+          [hidden]="plan && !isOwnerUser()"
+        >
+          <button
+            mat-button
+            [disabled]="!isOwnerUser() || !planIsPending() || isDialogMode()"
+            (click)="openActivityDialog(row)"
           >
-            Ações
-          </th>
-          <td
-            mat-cell
-            class="mat-cell"
-            *matCellDef="let row"
-            [hidden]="plan && !isOwnerUser()"
+            <mat-icon>edit</mat-icon>Editar
+          </button>
+          <button
+            mat-button
+            [disabled]="!isOwnerUser() || !planIsPending() || isDialogMode()"
+            (click)="deleteActivity(row)"
           >
-            <button
-              mat-icon-button
-              [disabled]="!isOwnerUser() || !planIsPending() || isDialogMode()"
-              (click)="openActivityDialog(row)"
-            >
-              <mat-icon>edit</mat-icon>
-            </button>
-            <button
-              mat-icon-button
-              [disabled]="!isOwnerUser() || !planIsPending() || isDialogMode()"
-              (click)="deleteActivity(row)"
-            >
-              <mat-icon>delete</mat-icon>
-            </button>
-          </td>
-        </ng-container>
+            <mat-icon>delete</mat-icon>Deletar
+          </button>
+        </td>
+      </ng-container>
 
-        <tr
-          mat-header-row
-          class="mat-header-row"
-          *matHeaderRowDef="displayedColumns"
-        ></tr>
-        <tr
-          mat-row
-          class="mat-row"
-          *matRowDef="let row; columns: displayedColumns"
-        ></tr>
+      <tr
+        mat-header-row
+        class="mat-header-row"
+        *matHeaderRowDef="displayedColumns"
+      ></tr>
+      <tr
+        mat-row
+        class="mat-row"
+        *matRowDef="let row; columns: displayedColumns"
+      ></tr>
 
-        <tr *matNoDataRow>
-          <td class="mat-cell" colspan="4">Nenhum registro encontrado</td>
-        </tr>
-      </table>
-    </div>
+      <tr *matNoDataRow>
+        <td class="mat-cell" colspan="4">Nenhum registro encontrado</td>
+      </tr>
+    </table>
   </div>
 
   <div *ngIf="plan?.activities?.length ?? 0 > 0">

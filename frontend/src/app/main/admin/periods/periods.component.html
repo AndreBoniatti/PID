@@ -17,13 +17,19 @@
       </ng-container>
 
       <ng-container matColumnDef="actions">
-        <th mat-header-cell class="mat-header-cell" *matHeaderCellDef>Ações</th>
+        <th
+          mat-header-cell
+          class="mat-header-cell actions-header"
+          *matHeaderCellDef
+        >
+          Ações
+        </th>
         <td mat-cell class="mat-cell" *matCellDef="let row">
-          <button mat-icon-button (click)="viewPeriodPlans(row)">
-            <mat-icon>visibility</mat-icon>
+          <button mat-button (click)="viewPeriodPlans(row)">
+            <mat-icon>visibility</mat-icon>Visualizar
           </button>
-          <button mat-icon-button (click)="deletePeriod(row)">
-            <mat-icon>delete</mat-icon>
+          <button mat-button (click)="deletePeriod(row)">
+            <mat-icon>delete</mat-icon>Deletar
           </button>
         </td>
       </ng-container>

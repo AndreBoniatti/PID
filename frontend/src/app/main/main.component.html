@@ -3,12 +3,7 @@
   <span>PID{{ userIsAdmin ? " (Admin)" : "" }}</span>
   <span class="spacer"></span>
 
-  <button mat-icon-button>
-    <mat-icon>notifications</mat-icon>
-  </button>
-  <button mat-icon-button (click)="logout()">
-    <mat-icon>logout</mat-icon>
-  </button>
+  <button mat-button (click)="logout()"><mat-icon>logout</mat-icon>Sair</button>
 </mat-toolbar>
 
 <div class="m-2">
