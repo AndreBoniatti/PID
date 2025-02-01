@@ -7,7 +7,7 @@ namespace PID.Api.Extensions;
 
 public static class AuthExtension
 {
-    public static void AddAuthConfiguration(this IServiceCollection services)
+    public static void AddAuthConfiguration(this IServiceCollection services, string secretKey)
     {
         services.AddAuthentication(options =>
         {
@@ -22,7 +22,7 @@ public static class AuthExtension
                 ValidateAudience = false,
                 ValidateLifetime = true,
                 ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("sua-chave-secreta-que-deve-ser-trocada-para-ser-mais-segura"))
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
             };
         });
 

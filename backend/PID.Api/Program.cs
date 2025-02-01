@@ -28,7 +28,7 @@ builder.Services.AddTransient<IUserRepository, UserRepository>();
 
 builder.Services.AddTransient<IReport<PlanDto>, WorkloadAllocationReport>();
 
-builder.Services.AddAuthConfiguration();
+builder.Services.AddAuthConfiguration(builder.Configuration["Jwt:Key"] ?? "");
 
 var app = builder.Build();
 

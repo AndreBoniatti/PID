@@ -15,6 +15,13 @@ namespace PID.Api.Controllers;
 [Route("api/[controller]")]
 public class AuthController : MainController
 {
+    private readonly IConfiguration _configuration;
+
+    public AuthController(IConfiguration configuration)
+    {
+        _configuration = configuration;
+    }
+
     [HttpPost("Google")]
     public async Task<IActionResult> GoogleLogin(
         [FromBody] GoogleLoginDto dto,
@@ -43,7 +50,7 @@ public class AuthController : MainController
 
             return Ok(new { token = jwtToken });
         }
-        catch (InvalidJwtException)
+        catch
         {
             return Unauthorized();
         }
@@ -60,7 +67,8 @@ public class AuthController : MainController
             new Claim("id", user.Id.ToString()),
         };
 
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("sua-chave-secreta-que-deve-ser-trocada-para-ser-mais-segura"));
+        var secretKey = _configuration["Jwt:Key"] ?? "";
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
         var token = new JwtSecurityToken(
