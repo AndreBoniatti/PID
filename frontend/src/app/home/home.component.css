@@ -1,8 +1,5 @@
-.auth-section {
-  display: flex;
-  justify-content: end;
-  align-items: center;
-  margin-bottom: 20px;
+.title {
+  margin-bottom: 25px;
 }
 
 .period-resume {

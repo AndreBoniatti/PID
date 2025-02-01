@@ -11,6 +11,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatDialogModule } from '@angular/material/dialog';
 import { FormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
+import { MatToolbarModule } from '@angular/material/toolbar';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -42,6 +43,7 @@ import { AggregatedPlansReportComponent } from './home/aggregated-plans-report/a
     MatDialogModule,
     FormsModule,
     MatSelectModule,
+    MatToolbarModule,
   ],
   providers: [
     provideHttpClient(withInterceptors([authInterceptor])),

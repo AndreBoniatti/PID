@@ -1,1 +1,14 @@
-<router-outlet />
+<mat-toolbar>
+  <img src="logo.png" class="logo-image" (click)="navigateToHome()" />
+  <span *ngIf="userInfo">PID{{ userIsAdmin ? " (Admin)" : "" }}</span>
+  <span class="spacer"></span>
+
+  <button mat-button *ngIf="userInfo" (click)="logout()">
+    <mat-icon>logout</mat-icon>Sair
+  </button>
+  <app-auth *ngIf="!userInfo"></app-auth>
+</mat-toolbar>
+
+<div class="m-4">
+  <router-outlet />
+</div>

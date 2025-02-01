@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { jwtDecode } from 'jwt-decode';
 
 import { environment } from '../../environments/environment';
@@ -17,6 +17,8 @@ const TOKEN_KEY = 'auth-token';
   providedIn: 'root',
 })
 export class AuthService {
+  private authenticatedUser$ = new BehaviorSubject<IUserInfo | null>(null);
+
   constructor(
     private http: HttpClient,
     private router: Router,
@@ -31,6 +33,7 @@ export class AuthService {
 
   setToken(token: string): void {
     this.localStorageService.setItem(TOKEN_KEY, token);
+    this.setAuthenticatedUser(this.getUserInfo());
   }
 
   getToken(): string {
@@ -69,5 +72,13 @@ export class AuthService {
   userIsAdmin(userInfo: IUserInfo | null): boolean {
     if (!userInfo) userInfo = this.getUserInfo();
     return userInfo?.type.toString() === EUserType.ADMIN.toString();
+  }
+
+  setAuthenticatedUser(userInfo: IUserInfo | null): void {
+    this.authenticatedUser$.next(userInfo);
+  }
+
+  getAuthenticatedUser(): Observable<IUserInfo | null> {
+    return this.authenticatedUser$.asObservable();
   }
 }

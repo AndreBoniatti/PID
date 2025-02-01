@@ -1,7 +1,4 @@
-.title-section {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.title {
   margin-bottom: 25px;
 }
 

@@ -1,159 +1,157 @@
-<div [ngClass]="{ 'm-3': !isDialogMode() }">
-  <div
-    class="rejection-warning"
-    *ngIf="
-      ((isOwnerUser() && !isDialogMode() && planIsPending()) ||
-        (authenticatedUserIsAdmin && isDialogMode() && !planIsApproved())) &&
-      plan?.reasonForRejection
-    "
-  >
-    <h2>Observação</h2>
-    <p>{{ plan?.reasonForRejection }}</p>
-  </div>
+<div
+  class="rejection-warning"
+  *ngIf="
+    ((isOwnerUser() && !isDialogMode() && planIsPending()) ||
+      (authenticatedUserIsAdmin && isDialogMode() && !planIsApproved())) &&
+    plan?.reasonForRejection
+  "
+>
+  <h2>Observação</h2>
+  <p>{{ plan?.reasonForRejection }}</p>
+</div>
 
-  <div
-    class="admin-activity-container"
-    *ngIf="authenticatedUserIsAdmin && isDialogMode() && planIsSent()"
+<div
+  class="admin-activity-container"
+  *ngIf="authenticatedUserIsAdmin && isDialogMode() && planIsSent()"
+>
+  <button mat-flat-button class="approve-button" (click)="approvePlan()">
+    <mat-icon>check</mat-icon>Aprovar
+  </button>
+
+  <button mat-flat-button (click)="rejectPlan()">
+    <mat-icon>close</mat-icon>Rejeitar
+  </button>
+</div>
+
+<div
+  class="activity-container"
+  *ngIf="
+    (!plan && authenticatedUser) ||
+    (isOwnerUser() && !isDialogMode() && !planIsApproved())
+  "
+>
+  <span class="activity-info"
+    >CH do Usuário: <strong>{{ userWorkload }}</strong></span
   >
-    <button mat-flat-button class="approve-button" (click)="approvePlan()">
-      <mat-icon>check</mat-icon>Aprovar
+  <span class="activity-info"
+    >CH Restante: <strong>{{ getWorkloadRemaining() }}</strong></span
+  >
+
+  <div>
+    <button
+      mat-raised-button
+      class="cancel-submit-button"
+      *ngIf="planIsSent()"
+      (click)="cancelPlanSubmission()"
+    >
+      <mat-icon>cancel_schedule_send</mat-icon>Cancelar Submissão
     </button>
 
-    <button mat-flat-button (click)="rejectPlan()">
-      <mat-icon>close</mat-icon>Rejeitar
+    <button
+      mat-raised-button
+      class="submit-button"
+      *ngIf="planIsPending()"
+      [disabled]="getWorkloadRemaining() !== 0"
+      (click)="submitPlan()"
+    >
+      <mat-icon>send</mat-icon>Submeter
+    </button>
+
+    <button
+      mat-raised-button
+      [disabled]="plan && !planIsPending()"
+      (click)="openActivityDialog()"
+    >
+      <mat-icon>add</mat-icon>Adicionar Atividade
+    </button>
+  </div>
+</div>
+
+<div class="mat-elevation-z8 mt-3">
+  <table mat-table class="mat-table" [dataSource]="dataSource">
+    <ng-container matColumnDef="description">
+      <th mat-header-cell class="mat-header-cell" *matHeaderCellDef>
+        Atividade
+      </th>
+      <td mat-cell class="mat-cell" *matCellDef="let row">
+        {{ row.description }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="activityType">
+      <th mat-header-cell class="mat-header-cell" *matHeaderCellDef>Tipo</th>
+      <td mat-cell class="mat-cell" *matCellDef="let row">
+        {{ row.activityType?.description }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="workload">
+      <th mat-header-cell class="mat-header-cell" *matHeaderCellDef>CH</th>
+      <td mat-cell class="mat-cell" *matCellDef="let row">
+        {{ row.workload }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <th
+        mat-header-cell
+        class="mat-header-cell actions-header"
+        *matHeaderCellDef
+        [hidden]="plan && !isOwnerUser()"
+      >
+        Ações
+      </th>
+      <td
+        mat-cell
+        class="mat-cell"
+        *matCellDef="let row"
+        [hidden]="plan && !isOwnerUser()"
+      >
+        <button
+          mat-button
+          [disabled]="!isOwnerUser() || !planIsPending() || isDialogMode()"
+          (click)="openActivityDialog(row)"
+        >
+          <mat-icon>edit</mat-icon>Editar
+        </button>
+        <button
+          mat-button
+          [disabled]="!isOwnerUser() || !planIsPending() || isDialogMode()"
+          (click)="deleteActivity(row)"
+        >
+          <mat-icon>delete</mat-icon>Deletar
+        </button>
+      </td>
+    </ng-container>
+
+    <tr
+      mat-header-row
+      class="mat-header-row"
+      *matHeaderRowDef="displayedColumns"
+    ></tr>
+    <tr
+      mat-row
+      class="mat-row"
+      *matRowDef="let row; columns: displayedColumns"
+    ></tr>
+
+    <tr *matNoDataRow>
+      <td class="mat-cell" colspan="4">Nenhum registro encontrado</td>
+    </tr>
+  </table>
+</div>
+
+<div *ngIf="plan?.activities?.length ?? 0 > 0">
+  <div class="print-container mt-4">
+    <button mat-raised-button (click)="getWorkloadAllocationReport()">
+      <mat-icon>print</mat-icon> Imprimir
     </button>
   </div>
 
-  <div
-    class="activity-container"
-    *ngIf="
-      (!plan && authenticatedUser) ||
-      (isOwnerUser() && !isDialogMode() && !planIsApproved())
-    "
-  >
-    <span class="activity-info"
-      >CH do Usuário: <strong>{{ userWorkload }}</strong></span
-    >
-    <span class="activity-info"
-      >CH Restante: <strong>{{ getWorkloadRemaining() }}</strong></span
-    >
-
-    <div>
-      <button
-        mat-raised-button
-        class="cancel-submit-button"
-        *ngIf="planIsSent()"
-        (click)="cancelPlanSubmission()"
-      >
-        <mat-icon>cancel_schedule_send</mat-icon>Cancelar Submissão
-      </button>
-
-      <button
-        mat-raised-button
-        class="submit-button"
-        *ngIf="planIsPending()"
-        [disabled]="getWorkloadRemaining() !== 0"
-        (click)="submitPlan()"
-      >
-        <mat-icon>send</mat-icon>Submeter
-      </button>
-
-      <button
-        mat-raised-button
-        [disabled]="plan && !planIsPending()"
-        (click)="openActivityDialog()"
-      >
-        <mat-icon>add</mat-icon>Adicionar Atividade
-      </button>
-    </div>
-  </div>
-
-  <div class="mat-elevation-z8 mt-3">
-    <table mat-table class="mat-table" [dataSource]="dataSource">
-      <ng-container matColumnDef="description">
-        <th mat-header-cell class="mat-header-cell" *matHeaderCellDef>
-          Atividade
-        </th>
-        <td mat-cell class="mat-cell" *matCellDef="let row">
-          {{ row.description }}
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="activityType">
-        <th mat-header-cell class="mat-header-cell" *matHeaderCellDef>Tipo</th>
-        <td mat-cell class="mat-cell" *matCellDef="let row">
-          {{ row.activityType?.description }}
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="workload">
-        <th mat-header-cell class="mat-header-cell" *matHeaderCellDef>CH</th>
-        <td mat-cell class="mat-cell" *matCellDef="let row">
-          {{ row.workload }}
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="actions">
-        <th
-          mat-header-cell
-          class="mat-header-cell actions-header"
-          *matHeaderCellDef
-          [hidden]="plan && !isOwnerUser()"
-        >
-          Ações
-        </th>
-        <td
-          mat-cell
-          class="mat-cell"
-          *matCellDef="let row"
-          [hidden]="plan && !isOwnerUser()"
-        >
-          <button
-            mat-button
-            [disabled]="!isOwnerUser() || !planIsPending() || isDialogMode()"
-            (click)="openActivityDialog(row)"
-          >
-            <mat-icon>edit</mat-icon>Editar
-          </button>
-          <button
-            mat-button
-            [disabled]="!isOwnerUser() || !planIsPending() || isDialogMode()"
-            (click)="deleteActivity(row)"
-          >
-            <mat-icon>delete</mat-icon>Deletar
-          </button>
-        </td>
-      </ng-container>
-
-      <tr
-        mat-header-row
-        class="mat-header-row"
-        *matHeaderRowDef="displayedColumns"
-      ></tr>
-      <tr
-        mat-row
-        class="mat-row"
-        *matRowDef="let row; columns: displayedColumns"
-      ></tr>
-
-      <tr *matNoDataRow>
-        <td class="mat-cell" colspan="4">Nenhum registro encontrado</td>
-      </tr>
-    </table>
-  </div>
-
-  <div *ngIf="plan?.activities?.length ?? 0 > 0">
-    <div class="print-container mt-4">
-      <button mat-raised-button (click)="getWorkloadAllocationReport()">
-        <mat-icon>print</mat-icon> Imprimir
-      </button>
-    </div>
-
-    <div class="mt-3 pb-3">
-      <app-workload-allocation
-        #workloadAllocation
-        [readonlyMode]="true"
-      ></app-workload-allocation>
-    </div>
+  <div class="mt-3 pb-3">
+    <app-workload-allocation
+      #workloadAllocation
+      [readonlyMode]="true"
+    ></app-workload-allocation>
   </div>
 </div>

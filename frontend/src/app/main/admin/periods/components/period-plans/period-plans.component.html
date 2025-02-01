@@ -1,78 +1,74 @@
-<div class="m-3">
-  <h2 class="title">Planos do Período {{ period?.description }}</h2>
+<h2 class="title">Planos do Período {{ period?.description }}</h2>
 
-  <div class="row">
-    <div class="col-md-8">
-      <mat-form-field class="mat-form-field">
-        <mat-label>Usuário</mat-label>
-        <input matInput [(ngModel)]="userNameFilter" (keyup)="applyFilter()" />
-      </mat-form-field>
-    </div>
-    <div class="col-md-4">
-      <mat-form-field class="mat-form-field">
-        <mat-label>Situação</mat-label>
-        <mat-select
-          [(ngModel)]="planSituationFilter"
-          (selectionChange)="applyFilter()"
-        >
-          <mat-option [value]="planSituation.PENDING">Pendente</mat-option>
-          <mat-option [value]="planSituation.SENT">Enviado</mat-option>
-          <mat-option [value]="planSituation.APPROVED">Homologado</mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
+<div class="row">
+  <div class="col-md-8">
+    <mat-form-field class="mat-form-field">
+      <mat-label>Usuário</mat-label>
+      <input matInput [(ngModel)]="userNameFilter" (keyup)="applyFilter()" />
+    </mat-form-field>
   </div>
-
-  <div class="mat-elevation-z8">
-    <table mat-table class="mat-table" [dataSource]="periodPlans">
-      <ng-container matColumnDef="userName">
-        <th mat-header-cell class="mat-header-cell" *matHeaderCellDef>
-          Usuário
-        </th>
-        <td mat-cell class="mat-cell" *matCellDef="let row">
-          {{ row.userName }}
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="userWorkload">
-        <th mat-header-cell class="mat-header-cell" *matHeaderCellDef>CH</th>
-        <td mat-cell class="mat-cell" *matCellDef="let row">
-          {{ row.userWorkload }}
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="planSituation">
-        <th mat-header-cell class="mat-header-cell" *matHeaderCellDef>
-          Situação
-        </th>
-        <td mat-cell class="mat-cell" *matCellDef="let row">
-          {{ getSituation(row.planSituation) }}
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="actions">
-        <th mat-header-cell class="mat-header-cell" *matHeaderCellDef>Ações</th>
-        <td mat-cell class="mat-cell" *matCellDef="let row">
-          <button mat-button (click)="openPlan(row)">
-            <mat-icon>visibility</mat-icon>Visualizar
-          </button>
-        </td>
-      </ng-container>
-
-      <tr
-        mat-header-row
-        class="mat-header-row"
-        *matHeaderRowDef="displayedColumns"
-      ></tr>
-      <tr
-        mat-row
-        class="mat-row"
-        *matRowDef="let row; columns: displayedColumns"
-      ></tr>
-
-      <tr *matNoDataRow>
-        <td class="mat-cell" colspan="4">Nenhum registro encontrado</td>
-      </tr>
-    </table>
+  <div class="col-md-4">
+    <mat-form-field class="mat-form-field">
+      <mat-label>Situação</mat-label>
+      <mat-select
+        [(ngModel)]="planSituationFilter"
+        (selectionChange)="applyFilter()"
+      >
+        <mat-option [value]="planSituation.PENDING">Pendente</mat-option>
+        <mat-option [value]="planSituation.SENT">Enviado</mat-option>
+        <mat-option [value]="planSituation.APPROVED">Homologado</mat-option>
+      </mat-select>
+    </mat-form-field>
   </div>
+</div>
+
+<div class="mat-elevation-z8">
+  <table mat-table class="mat-table" [dataSource]="periodPlans">
+    <ng-container matColumnDef="userName">
+      <th mat-header-cell class="mat-header-cell" *matHeaderCellDef>Usuário</th>
+      <td mat-cell class="mat-cell" *matCellDef="let row">
+        {{ row.userName }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="userWorkload">
+      <th mat-header-cell class="mat-header-cell" *matHeaderCellDef>CH</th>
+      <td mat-cell class="mat-cell" *matCellDef="let row">
+        {{ row.userWorkload }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="planSituation">
+      <th mat-header-cell class="mat-header-cell" *matHeaderCellDef>
+        Situação
+      </th>
+      <td mat-cell class="mat-cell" *matCellDef="let row">
+        {{ getSituation(row.planSituation) }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell class="mat-header-cell" *matHeaderCellDef>Ações</th>
+      <td mat-cell class="mat-cell" *matCellDef="let row">
+        <button mat-button (click)="openPlan(row)">
+          <mat-icon>visibility</mat-icon>Visualizar
+        </button>
+      </td>
+    </ng-container>
+
+    <tr
+      mat-header-row
+      class="mat-header-row"
+      *matHeaderRowDef="displayedColumns"
+    ></tr>
+    <tr
+      mat-row
+      class="mat-row"
+      *matRowDef="let row; columns: displayedColumns"
+    ></tr>
+
+    <tr *matNoDataRow>
+      <td class="mat-cell" colspan="4">Nenhum registro encontrado</td>
+    </tr>
+  </table>
 </div>
