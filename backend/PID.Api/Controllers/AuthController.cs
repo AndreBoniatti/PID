@@ -35,12 +35,12 @@ public class AuthController : MainController
             var user = userRepository.Find(x => x.Email == payload.Email).FirstOrDefault();
             if (user == null)
             {
-                user = new User(payload.Email, payload.Name, payload.Picture);
+                user = new User(payload.Email, payload.Name);
                 userRepository.Add(user);
             }
             else
             {
-                user.Update(payload.Name, payload.Picture);
+                user.Update(payload.Name);
                 userRepository.Update(user);
             }
 

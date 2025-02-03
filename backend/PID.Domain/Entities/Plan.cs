@@ -12,7 +12,6 @@ public class Plan : EntityBase
     }
 
     public EPlanSituation Situation { get; private set; }
-    public string? Observation { get; private set; }
     public string? ReasonForRejection { get; private set; }
 
     public Guid UserId { get; private set; }

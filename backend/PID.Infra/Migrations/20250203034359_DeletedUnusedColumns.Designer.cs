@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PID.Infra.Context;
@@ -12,9 +13,11 @@ using PID.Infra.Context;
 namespace PID.Infra.Migrations
 {
     [DbContext(typeof(PIDContext))]
-    partial class PIDContextModelSnapshot : ModelSnapshot
+    [Migration("20250203034359_DeletedUnusedColumns")]
+    partial class DeletedUnusedColumns
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
